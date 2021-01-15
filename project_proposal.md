@@ -27,7 +27,6 @@ parts of a continent.
 The database for the website will have models for users, species, cities, and
 countries. The user model will include their username, email, encrypted
 password, city, and a list of species. The species model will include its name,
-01234567890123456789012345678901234567890123456789012345678901234567890123456789
 its threatened level, the country it is in, and a list of users that have
 selected it. The city model will have a name, the country that it's in, and a
 list of users in the city. The country model will have a name, a list of cities
