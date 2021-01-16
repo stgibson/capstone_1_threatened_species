@@ -48,12 +48,12 @@ the user's approximate location.
 
 An MVP will have the following functionality:
 * Users can sign up on the website by providing their username, email, city,
-region from a dropdown, and password
+country, and password
 * The server will encrypt passwords using bcrypt before storing it in the
 database
 * Users can login on the website with valid credentials (username and password)
 * Logged in users can logout of their account on the website
-* Logged in users can search for a species in their region to learn about its
+* Logged in users can search for a species in their country to learn about its
 threatened level
 * Logged in users can choose to add a threatened species to their list of
 species
@@ -64,17 +64,17 @@ information with each other
 ### User Flow
 
 If the user is visiting the website for the first time, the user must first
-create an account by entering a username, the user's email, the city and region
+create an account by entering a username, the user's email, the city and country
 the user lives in, and a password. The user must also check a box acknowledging
 that they understand that by using the site other users may become aware of the
 user's username and the city the user lives in, if there is a match between
 users. If the user already has an account, the user must login using the same
 username and password the user used to create an account. The user may search
-for a species by name, and if the species is located in the same region as the
+for a species by name, and if the species is located in the same country as the
 user, the user gets information on the threatened level. If the species is not
 found, the user gets a message stating that the species is not known by the
-website. If the species is not found in the user's region, the user gets a
-message stating that the species does not exist in the user's region. If the
+website. If the species is not found in the user's country, the user gets a
+message stating that the species does not exist in the user's country. If the
 user does get information on the species and the species is threatened, the user
 also sees a button that when clicked, will add the species to a list of species.
 The user can also choose to remove a species from the list. If a certain number
@@ -87,9 +87,9 @@ may logout.
 ### Backlog
 
 The following is a list of backlog features for future versions of the project:
-* The user can choose to be notified of other users based on county, state, a
-specified radius from the user's location, region, or country
-* The server will determine which region the user is in based on the city the
+* The user can choose to be notified of other users based on county, state, or a
+specified radius from the user's location
+* The server will determine which country the user is in based on the city the
 user is in
 * The user can also input a state or province, based on their country
 * When users are notified of each other, they can create a joint document to
