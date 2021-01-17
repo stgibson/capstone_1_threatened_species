@@ -82,7 +82,8 @@ of users in the same city have the same species in their lists as a species in
 the user's list, the user gets a list of the other users' usernames. The user
 can then choose whether or not to send the user's email address to the other
 users. When the user is done working on the website for the time being, the user
-may logout.
+may logout. When the user is logged in, the user also has the option to delete
+the user's account.
 
 ### Backlog
 
