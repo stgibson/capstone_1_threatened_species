@@ -90,6 +90,9 @@ the user's account.
 The following is a list of backlog features for future versions of the project:
 * Instructions on how to use the website are provided
 * Add an about page and contact us page
+* Also display common name(s) for species to user
+* Make threatened level name more user friendly
+* User selects country from a dropdown
 * The user can choose to be notified of other users based on county, state, or a
 specified radius from the user's location
 * The server will determine which country the user is in based on the city the
