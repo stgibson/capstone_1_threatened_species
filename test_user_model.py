@@ -77,6 +77,26 @@ class UserModelTestCase(TestCase):
             f"<User id={user_id} username={username} email={email} \
 password={password} city_id={city_id}>")
 
+        # also test if can get species user likes
+        species_list = [
+            { "name": "species1", "threatened": "VU" },
+            { "name": "species2", "threatened": "VU" },
+            { "name": "species3", "threatened": "VU" }
+        ]
+        num_of_species = len(species_list)
+        all_species = \
+            [Species(name=species["name"], threatened=species["threatened"]) \
+            for species in species_list]
+        for species in all_species:
+            user.species.append(species)
+        db.session.commit()
+
+        self.assertEqual(len(user.species), num_of_species)
+        for i in range(num_of_species):
+            self.assertEqual(user.species[i].name, species_list[i]["name"])
+            self.assertEqual(user.species[i].threatened, \
+                species_list[i]["threatened"])
+
     def test_user_model_fail(self):
         """
             Tests fail to create user with invalid input
