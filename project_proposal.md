@@ -89,7 +89,8 @@ the user's account.
 
 The following is a list of backlog features for future versions of the project:
 * Instructions on how to use the website are provided
-* Allow users to modify their profile
+* Allow users to view and modify their profile
+* Allow users to delete their accounts
 * Add an about page and contact us page
 * Also display common name(s) for species to user
 * Make threatened level name more user friendly
