@@ -53,31 +53,51 @@ class UserModelTestCase(TestCase):
             Tests can create user with valid input
         """
 
-        username = self.user1["username"]
-        email = self.user1["email"]
+        username1 = self.user1["username"]
+        email1 = self.user1["email"]
         password = self.user1["password"]
         city_id = self.city.id
-        user = User(
-            username=username,
-            email=email,
+        user1 = User(
+            username=username1,
+            email=email1,
             password=password,
             city_id=city_id
         )
-        db.session.add(user)
+        db.session.add(user1)
         db.session.commit()
-        user = User.query.filter_by(username=username).one()
-        user_id = user.id
+        user1 = User.query.filter_by(username=username1).one()
+        user1_id = user1.id
 
-        self.assertIsNotNone(user_id)
-        self.assertEqual(user.username, username)
-        self.assertEqual(user.email, email)
-        self.assertEqual(user.password, password)
-        self.assertEqual(user.city, self.city)
+        self.assertIsNotNone(user1_id)
+        self.assertEqual(user1.username, username1)
+        self.assertEqual(user1.email, email1)
+        self.assertEqual(user1.password, password)
+        self.assertEqual(user1.city, self.city)
         self.assertEqual(
-            user.__repr__(),
-            f"<User id={user_id} username={username} email={email} \
+            user1.__repr__(),
+            f"<User id={user1_id} username={username1} email={email1} \
 password={password} city_id={city_id}>"
         )
+
+        # test can add users with same password and same city id
+        username2 = self.user2["username"]
+        email2 = self.user2["email"]
+        user2 = User(
+            username=username2,
+            email=email2,
+            password=password,
+            city_id=city_id
+        )
+        db.session.add(user2)
+        db.session.commit()
+        user2 = User.query.filter_by(username=username2).one()
+        user2_id = user2.id
+
+        self.assertIsNotNone(user2_id)
+        self.assertEqual(user2.username, username2)
+        self.assertEqual(user2.email, email2)
+        self.assertEqual(user2.password, password)
+        self.assertEqual(user2.city, self.city)
 
         # also test if can get species user likes
         species_list = [
@@ -91,14 +111,14 @@ password={password} city_id={city_id}>"
             threatened=species["threatened"]
         ) for species in species_list]
         for species in all_species:
-            user.species.append(species)
+            user1.species.append(species)
         db.session.commit()
 
-        self.assertEqual(len(user.species), num_of_species)
+        self.assertEqual(len(user1.species), num_of_species)
         for i in range(num_of_species):
-            self.assertEqual(user.species[i].name, species_list[i]["name"])
+            self.assertEqual(user1.species[i].name, species_list[i]["name"])
             self.assertEqual(
-                user.species[i].threatened,
+                user1.species[i].threatened,
                 species_list[i]["threatened"]
             )
 
