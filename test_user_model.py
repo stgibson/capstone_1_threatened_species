@@ -86,9 +86,10 @@ password={password} city_id={city_id}>"
             { "name": "species3", "threatened": "VU" }
         ]
         num_of_species = len(species_list)
-        all_species = \
-            [Species(name=species["name"], threatened=species["threatened"]) \
-            for species in species_list]
+        all_species = [Species(
+            name=species["name"],
+            threatened=species["threatened"]
+        ) for species in species_list]
         for species in all_species:
             user.species.append(species)
         db.session.commit()
@@ -96,8 +97,10 @@ password={password} city_id={city_id}>"
         self.assertEqual(len(user.species), num_of_species)
         for i in range(num_of_species):
             self.assertEqual(user.species[i].name, species_list[i]["name"])
-            self.assertEqual(user.species[i].threatened, \
-                species_list[i]["threatened"])
+            self.assertEqual(
+                user.species[i].threatened,
+                species_list[i]["threatened"]
+            )
 
     def test_user_model_fail(self):
         """
