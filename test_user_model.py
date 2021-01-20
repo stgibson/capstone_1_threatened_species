@@ -112,7 +112,7 @@ password={password} city_id={city_id}>"
         ) for species in species_list]
         for species in all_species:
             user1.species.append(species)
-        db.session.commit()
+            db.session.commit()
 
         self.assertEqual(len(user1.species), num_of_species)
         for i in range(num_of_species):
