@@ -25,24 +25,24 @@ class UserModelTestCase(TestCase):
         Country.query.delete()
 
         # create city and country for user to live in
-        country = Country(name="Test Country")
+        country = Country(name="Country")
         db.session.add(country)
         db.session.commit()
 
-        city = City(name="Test City", country_id=country.id)
+        city = City(name="City", country_id=country.id)
         db.session.add(city)
         db.session.commit()
-        self.test_city = city
+        self.city = city
 
-        self.test_user1 = {
-            "username": "testuser1",
-            "email": "test1@gmail.com",
+        self.user1 = {
+            "username": "user1",
+            "email": "email1@gmail.com",
             "password": "password"
         }
 
-        self.test_user2 = {
-            "username": "testuser2",
-            "email": "test2@gmail.com",
+        self.user2 = {
+            "username": "user2",
+            "email": "email2@gmail.com",
             "password": "password"
         }
         
@@ -53,10 +53,10 @@ class UserModelTestCase(TestCase):
             Tests can create user with valid input
         """
 
-        username = self.test_user1["username"]
-        email = self.test_user1["email"]
-        password = self.test_user1["password"]
-        city_id = self.test_city.id
+        username = self.user1["username"]
+        email = self.user1["email"]
+        password = self.user1["password"]
+        city_id = self.city.id
         user = User(
             username=username,
             email=email,
@@ -72,7 +72,7 @@ class UserModelTestCase(TestCase):
         self.assertEqual(user.username, username)
         self.assertEqual(user.email, email)
         self.assertEqual(user.password, password)
-        self.assertEqual(user.city, self.test_city)
+        self.assertEqual(user.city, self.city)
         self.assertEqual(
             user.__repr__(),
             f"<User id={user_id} username={username} email={email} \
@@ -105,10 +105,10 @@ password={password} city_id={city_id}>"
         """
 
         # first create a user to test uniqueness constraints
-        username1 = self.test_user1["username"]
-        email1 = self.test_user1["email"]
-        password1 = self.test_user1["password"]
-        city_id = self.test_city.id
+        username1 = self.user1["username"]
+        email1 = self.user1["email"]
+        password1 = self.user1["password"]
+        city_id = self.city.id
         user = User(
             username=username1,
             email=email1,
@@ -119,9 +119,9 @@ password={password} city_id={city_id}>"
         db.session.commit()
 
         # now test creating a new user with invalid inputs
-        username2 = self.test_user2["username"]
-        email2 = self.test_user2["email"]
-        password2 = self.test_user2["password"]
+        username2 = self.user2["username"]
+        email2 = self.user2["email"]
+        password2 = self.user2["password"]
 
         # test not including username
         user = User(email=email2, password=password2, city_id=city_id)
@@ -181,10 +181,10 @@ password={password} city_id={city_id}>"
     #     """
         
     #     # test for valid input
-    #     username1 = self.test_user1["username"]
-    #     email1 = self.test_user1["email"]
-    #     password1 = self.test_user1["password"]
-    #     city_id = self.test_city.id
+    #     username1 = self.user1["username"]
+    #     email1 = self.user1["email"]
+    #     password1 = self.user1["password"]
+    #     city_id = self.city.id
     #     user = User.signup(username1, email1, password1, city_id)
           
     #     self.assertIsNotNone(user.id)
@@ -192,12 +192,12 @@ password={password} city_id={city_id}>"
     #     self.assertEqual(user.email, email1)
     #     # validate password is encrypted
     #     self.assertNotEqual(user.password, password1)
-    #     self.assertEqual(user.city, self.test_city)
+    #     self.assertEqual(user.city, self.city)
 
     #     # test for invalid input
-    #     username2 = self.test_user2["username"]
-    #     email2 = self.test_user2["email"]
-    #     password2 = self.test_user2["password"]
+    #     username2 = self.user2["username"]
+    #     email2 = self.user2["email"]
+    #     password2 = self.user2["password"]
 
     #     # test attempt to create account with existing username
     #     user = User.signup(username1, email2, password2, city_id)
@@ -214,8 +214,8 @@ password={password} city_id={city_id}>"
     #     """
 
     #     # test providing valid credentials
-    #     username = self.test_user1["username"]
-    #     password = self.test_user1["password"]
+    #     username = self.user1["username"]
+    #     password = self.user1["password"]
     #     user = User.authenticate(username, password)
 
     #     self.assertIsNotNone(user.id)
