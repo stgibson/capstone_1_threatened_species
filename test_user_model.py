@@ -73,9 +73,11 @@ class UserModelTestCase(TestCase):
         self.assertEqual(user.email, email)
         self.assertEqual(user.password, password)
         self.assertEqual(user.city, self.test_city)
-        self.assertEqual(user.__repr__(),
+        self.assertEqual(
+            user.__repr__(),
             f"<User id={user_id} username={username} email={email} \
-password={password} city_id={city_id}>")
+password={password} city_id={city_id}>"
+        )
 
         # also test if can get species user likes
         species_list = [
