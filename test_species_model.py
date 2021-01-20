@@ -9,7 +9,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///threatened-species-test"
 
 db.create_all()
 
-class UserModelTestCase(TestCase):
+class SpeciesModelTestCase(TestCase):
     """
         Tests for columns and methods in Species model
     """
@@ -135,7 +135,7 @@ threatened={threatened}>'
 
     def test_species_model_fail(self):
         """
-            Tests fail to create user with invalid input
+            Tests fail to create species with invalid input
         """
 
         # first create a species to test uniqueness constraints
