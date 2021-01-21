@@ -136,12 +136,12 @@ class User_Species(db.Model):
 
     user_id = db.Column(
         db.ForeignKey("users.id", ondelete="cascade"),
-        nullable=False
+        primary_key=True
     )
 
     species_id = db.Column(
         db.ForeignKey("species.id", ondelete="cascade"),
-        nullable=False
+        primary_key=True
     )
 
     def __repr__(self) -> str:
@@ -165,12 +165,12 @@ class Species_Country(db.Model):
 
     species_id = db.Column(
         db.ForeignKey("species.id", ondelete="cascade"),
-        nullable=False
+        primary_key=True
     )
 
     country_id = db.Column(
         db.ForeignKey("countries.id", ondelete="cascade"),
-        nullable=False
+        primary_key=True
     )
 
     def __repr__(self) -> str:
