@@ -139,7 +139,7 @@ class City(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
-    name = db.Column(db.Text, nullable=False, unique=True)
+    name = db.Column(db.Text, nullable=False)
 
     country_id = db.Column(
         db.Integer,
