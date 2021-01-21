@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Login Page{% endblock %}
+
+{% block content %}
+  <form method="POST" action="/login">
+    {% include "form.html" %}
+    <button class="btn btn-success" type="submit">Login</button>
+  </form>
+  <small>
+    Don't have an account? <a href="/login">Click here</a> to sign up!
+  </small>
+{% endblock %}
