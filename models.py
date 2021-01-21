@@ -1,6 +1,11 @@
+from __future__ import annotations
 from flask_sqlalchemy import SQLAlchemy
+from flask_bcrypt import Bcrypt
+from sqlalchemy.exc import IntegrityError
 
 db = SQLAlchemy()
+
+bcrypt = Bcrypt()
 
 def connect_db(app):
     """
@@ -46,6 +51,55 @@ class User(db.Model):
 
         return f"<User id={self.id} username={self.username} \
 email={self.email} password={self.password} city_id={self.city_id}>"
+
+    @classmethod
+    def signup(cls, username: str, email: str, password: str, \
+        city_id: int) -> User | None:
+        """
+            Creates a new user with given credentials. Returns new user unless
+            an error occurs, in which case return None.
+            :type username: str
+            :type email: str
+            :type password: str
+            :type city_id: int
+            :rtype: User
+        """
+
+        # first encrypt password
+        hashed_password = \
+            bcrypt.generate_password_hash(password).decode("utf8")
+
+        user = cls(
+            username=username,
+            email=email,
+            password=hashed_password,
+            city_id=city_id
+        )
+        db.session.add(user)
+        try:
+            db.session.commit()
+            return user
+        except IntegrityError:
+            db.session.rollback()
+            return None
+
+    @classmethod
+    def authenticate(cls, username: str, password: str) -> User | None:
+        """
+            Determines if credentials are valid. If so, returns the appropriate
+            user, otherwise returns None.
+            :type username: str
+            :type password: str
+            :rtype: User
+        """
+
+        user = cls.query.filter_by(username=username).one_or_none()
+        if (user):
+            hashed_password = user.password
+
+            if (bcrypt.check_password_hash(hashed_password, password)):
+                return user
+        return None
 
 class Species(db.Model):
     """

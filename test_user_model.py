@@ -198,57 +198,62 @@ password={password} city_id={city_id}>"
             db.session.commit()
         db.session.rollback()
 
-    # def test_signup(self):
-    #     """
-    #         Tests signup only creates a new user with valid input
-    #     """
+    def test_signup(self):
+        """
+            Tests signup only creates a new user with valid input
+        """
         
-    #     # test for valid input
-    #     username1 = self.user1["username"]
-    #     email1 = self.user1["email"]
-    #     password1 = self.user1["password"]
-    #     city_id = self.city.id
-    #     user = User.signup(username1, email1, password1, city_id)
+        # test for valid input
+        username1 = self.user1["username"]
+        email1 = self.user1["email"]
+        password1 = self.user1["password"]
+        city_id = self.city.id
+        user = User.signup(username1, email1, password1, city_id)
           
-    #     self.assertIsNotNone(user.id)
-    #     self.assertEqual(user.username, username1)
-    #     self.assertEqual(user.email, email1)
-    #     # validate password is encrypted
-    #     self.assertNotEqual(user.password, password1)
-    #     self.assertEqual(user.city, self.city)
+        self.assertIsNotNone(user.id)
+        self.assertEqual(user.username, username1)
+        self.assertEqual(user.email, email1)
+        # validate password is encrypted
+        self.assertNotEqual(user.password, password1)
+        self.assertEqual(user.city, self.city)
 
-    #     # test for invalid input
-    #     username2 = self.user2["username"]
-    #     email2 = self.user2["email"]
-    #     password2 = self.user2["password"]
+        # test for invalid input
+        username2 = self.user2["username"]
+        email2 = self.user2["email"]
+        password2 = self.user2["password"]
 
-    #     # test attempt to create account with existing username
-    #     user = User.signup(username1, email2, password2, city_id)
-    #     self.assertIsNone(user)
+        # test attempt to create account with existing username
+        user = User.signup(username1, email2, password2, city_id)
+        self.assertIsNone(user)
 
-    #     # test attempt to create account with existing email
-    #     user = User.signup(username2, email1, password2, city_id)
-    #     self.assertIsNone(user)
+        # test attempt to create account with existing email
+        user = User.signup(username2, email1, password2, city_id)
+        self.assertIsNone(user)
 
-    # def test_authenticate(self):
-    #     """
-    #         Tests authenticate only returns user when valid credentials
-    #         provided
-    #     """
+    def test_authenticate(self):
+        """
+            Tests authenticate only returns user when valid credentials
+            provided
+        """
 
-    #     # test providing valid credentials
-    #     username = self.user1["username"]
-    #     password = self.user1["password"]
-    #     user = User.authenticate(username, password)
+        # first create an account
+        username = self.user1["username"]
+        email = self.user1["email"]
+        password = self.user1["password"]
+        city_id = self.city.id
+        User.signup(username, email, password, city_id)
 
-    #     self.assertIsNotNone(user.id)
-    #     self.assertEqual(user.username, username)
-    #     # validate password is encrypted
-    #     self.assertNotEqual(user.password, password)
+        # test providing valid credentials
+        user = User.authenticate(username, password)
 
-    #     # test providing invalid credentials
-    #     user = User.authenticate("wrong", password)
-    #     self.assertIsNone(user)
+        self.assertIsNotNone(user.id)
+        self.assertEqual(user.username, username)
+        # validate password is encrypted
+        self.assertNotEqual(user.password, password)
 
-    #     user = User.authenticate(username, "wrong")
-    #     self.assertIsNone(user)
+        # test providing invalid credentials
+        user = User.authenticate("wrong", password)
+        self.assertIsNone(user)
+
+        user = User.authenticate(username, "wrong")
+        self.assertIsNone(user)
