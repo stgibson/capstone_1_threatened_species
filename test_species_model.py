@@ -232,49 +232,57 @@ threatened={threatened}>'
         with self.assertRaises(SpeciesError):
             Species.add_species(species_id, user_id)
 
-    # def test_delete_species(self):
-    #     """
-    #         Tests can delete species from user only if in user's list
-    #     """
+        # test that will get error if pass invalid species id
+        with self.assertRaises(SpeciesError):
+            Species.add_species(0, user_id)
 
-    #     # first add a species to a new user's list
-    #     name = self.test_species1["name"]
-    #     threatened = self.test_species1["threatened"]
-    #     species = Species(name=name, threatened=threatened)
-    #     db.session.add(species)
-    #     db.session.commit()
-    #     species_id = species.id
+    def test_delete_species(self):
+        """
+            Tests can delete species from user only if in user's list
+        """
+
+        # first add a species to a new user's list
+        name = self.test_species1["name"]
+        threatened = self.test_species1["threatened"]
+        species = Species(name=name, threatened=threatened)
+        db.session.add(species)
+        db.session.commit()
+        species_id = species.id
         
-    #     country = Country(name="Country")
-    #     db.session.add(country)
-    #     db.session.commit()
-    #     country_id = country.id
+        country = Country(name="Country")
+        db.session.add(country)
+        db.session.commit()
+        country_id = country.id
 
-    #     city = City(name="City", country_id=country_id)
-    #     db.session.add(country)
-    #     db.session.commit()
-    #     city_id = city.id
+        city = City(name="City", country_id=country_id)
+        db.session.add(city)
+        db.session.commit()
+        city_id = city.id
 
-    #     username = "user"
-    #     email = "email"
-    #     password = "password"
-    #     user = User(
-    #         username=username,
-    #         email=email,
-    #         password=password,
-    #         city_id=city_id
-    #     )
-    #     db.session.add(user)
-    #     db.session.commit()
-    #     user_id = user.id
+        username = "user"
+        email = "email"
+        password = "password"
+        user = User(
+            username=username,
+            email=email,
+            password=password,
+            city_id=city_id
+        )
+        db.session.add(user)
+        db.session.commit()
+        user_id = user.id
 
-    #     user.species.append(species)
-    #     db.session.commit()
+        user.species.append(species)
+        db.session.commit()
 
-    #     # test can delete species
-    #     Species.delete_species(species_id, user_id)
-    #     self.assertEqual(len(user.species), 0)
+        # test can delete species
+        Species.delete_species(species_id, user_id)
+        self.assertEqual(len(user.species), 0)
 
-    #     # test that will get error if try to delete species
-    #     with self.assertRaises(SpeciesError):
-    #         Species.delete_species(species_id, user_id)
+        # test that will get error if try to delete species
+        with self.assertRaises(SpeciesError):
+            Species.delete_species(species_id, user_id)
+
+        # test that will get error if invalid species id
+        with self.assertRaises(SpeciesError):
+            Species.delete_species(0, user_id)

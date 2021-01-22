@@ -181,9 +181,8 @@ threatened={self.threatened}>'
     @classmethod
     def add_species(cls, species_id: int, user_id: int) -> None:
         """
-            Adds species with id species_id to list of species user with id
-            user_id likes. If species_id already on user's list, raise
-            exception.
+            Adds species with id species_id to list of species of user with id
+            user_id. If species_id already on user's list, raise exception.
             :type species_id: int
             :type user_id: int
             :rtype: None
@@ -197,9 +196,35 @@ threatened={self.threatened}>'
                 f"You have already added species {species.name} to your list"
             raise SpeciesError(error_message)
         else:
+            # might fail if user uses a request app to submit request
+            try: 
+                species = cls.query.get(species_id)
+                user.species.append(species)
+                db.session.commit()
+            except:
+                db.session.rollback()
+                raise SpeciesError("Invalid address")
+
+    @classmethod
+    def delete_species(cls, species_id: int, user_id: int) -> None:
+        """
+            Deletes species with id species_id from list of species of user
+            with id user_id, or raises an exception if species isn't on the
+            list
+            :type species_id: int
+            :type user_id: int
+            :rtype: None
+        """
+
+        user = User.query.get(user_id)
+        try:
             species = cls.query.get(species_id)
-            user.species.append(species)
+            user.species.remove(species)
             db.session.commit()
+        except:
+            db.session.rollback()
+            error_message = "You do not have that species in your list"
+            raise SpeciesError(error_message)
 
 class City(db.Model):
     """
