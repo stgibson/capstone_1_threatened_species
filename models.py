@@ -11,6 +11,15 @@ db = SQLAlchemy()
 
 bcrypt = Bcrypt()
 
+class SpeciesError(Exception):
+    """
+        Exception for errors with using Species models
+    """
+
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
+
 def connect_db(app):
     """
         Connects app to db
@@ -116,7 +125,7 @@ class Species(db.Model):
 
     name = db.Column(db.Text, nullable=False, unique=True)
 
-    threatened = db.Column(db.Text)
+    threatened = db.Column(db.Text, nullable=False)
 
     countries = db.relationship(
         "Country",
@@ -152,30 +161,21 @@ threatened={self.threatened}>'
         params = { "token": TOKEN }
         try:
             resp = requests.get(
-                f"{BASE_URL}species/{species_name}",
+                f"{BASE_URL}species/{name_supported_format}",
                 params=params
             )
             data = resp.json()
             name = data["name"]
 
-            # species may or may not have info on threatened level
-            result = data.get("result", None)
-            if result:
-                threatened = result[0].get("category", None)
-                if threatened:
-                    species = cls(name=name, threatened=threatened)
-                    db.session.add(species)
-                    db.session.commit()
-                    return species
-
-            # just add species name if couldn't find threatened level
-            species = cls(name=name)
+            result = data["result"]
+            threatened = result[0]["category"]
+            species = cls(name=name, threatened=threatened)
             db.session.add(species)
             db.session.commit()
             return species
         except:
-            return None
-        return None
+            db.session.rollback()
+            raise SpeciesError(f"Could not find {species_name}")
 
 class City(db.Model):
     """

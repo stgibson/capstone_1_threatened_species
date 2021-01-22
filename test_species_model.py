@@ -1,5 +1,5 @@
 from unittest import TestCase
-from models import db, User, Species, City, Country
+from models import db, User, Species, City, Country, SpeciesError
 from app import app
 from sqlalchemy.exc import IntegrityError
 
@@ -183,8 +183,8 @@ threatened={threatened}>'
         self.assertEqual(species.name, name)
 
         # test that I can't get a species that doesn't exist
-        # with self.assertRaises(SpeciesError):
-        #     species = Species.get_species(name)
+        with self.assertRaises(SpeciesError):
+            species = Species.get_species("bad species")
 
     # def test_add_species(self):
     #     """
