@@ -254,6 +254,8 @@ def delete_species_from_list(species_id: int) -> str:
     """
         Deletes species from user's list. If the species isn't on user's list,
         lets user know.
+        :type species_id: int
+        :rtype: str
     """
 
     error_message = \
