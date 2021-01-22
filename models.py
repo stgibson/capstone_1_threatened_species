@@ -33,7 +33,7 @@ class User(db.Model):
     password = db.Column(db.Text, nullable=False)
 
     city_id = db.Column(
-        db.ForeignKey("cities.id", ondelete="cascade"),
+        db.ForeignKey("cities.id"),
         nullable=False
     )
 
@@ -143,7 +143,7 @@ class City(db.Model):
 
     country_id = db.Column(
         db.Integer,
-        db.ForeignKey("countries.id", ondelete="cascade"),
+        db.ForeignKey("countries.id"),
         nullable=False
     )
 
