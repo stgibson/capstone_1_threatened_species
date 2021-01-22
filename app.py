@@ -204,18 +204,24 @@ def get_species_data() -> str:
         :rtype: str
     """
 
-    species_name = request.args["species"]
-    # if user clicks search on blank input, remove species from page
-    if not species_name:
-        if session.get("species_id"):
-            del session["species_id"]
-        return redirect("/home")
-    try:
-        species = Species.get_species(species_name)
-        session["species_id"] = species.id
-    except SpeciesError as exc:
-        if session.get("species_id", None):
-            del session["species_id"]
-        flash(exc.message, "danger")
-    finally:
-        return redirect("/home")
+    error_message = \
+        "You are not authorized to access that page. Please first login or \
+create an account."
+    if session.get("current_user_id", None):
+        species_name = request.args["species"]
+        # if user clicks search on blank input, remove species from page
+        if not species_name:
+            if session.get("species_id"):
+                del session["species_id"]
+            return redirect("/home")
+        try:
+            species = Species.get_species(species_name)
+            session["species_id"] = species.id
+        except SpeciesError as exc:
+            if session.get("species_id", None):
+                del session["species_id"]
+            flash(exc.message, "danger")
+        finally:
+            return redirect("/home")
+    flash(error_message, "danger")
+    return redirect("/login")
