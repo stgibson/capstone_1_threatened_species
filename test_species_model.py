@@ -164,27 +164,27 @@ threatened={threatened}>'
             db.session.commit()
         db.session.rollback()
 
-    # def test_get_species(self):
-    #     """
-    #         Tests can get data on species only if it exists
-    #     """
+    def test_get_species(self):
+        """
+            Tests can get data on species only if it exists
+        """
 
-    #     # test if I can get a species that exists but isn't in db
-    #     name = self.sample_species_name
-    #     species = Species.get_species(name)
+        # test if I can get a species that exists but isn't in db
+        name = self.sample_species_name
+        species = Species.get_species(name)
 
-    #     self.assertIsNotNone(species)
-    #     self.assertEqual(species.name, name)
+        self.assertIsNotNone(species)
+        self.assertEqual(species.name, name)
 
-    #     # test if I can get the same species not that it's in db
-    #     species = Species.get_species(name)
+        # test if I can get the same species not that it's in db
+        species = Species.get_species(name)
 
-    #     self.assertIsNotNone(species)
-    #     self.assertEqual(species.name, name)
+        self.assertIsNotNone(species)
+        self.assertEqual(species.name, name)
 
-    #     # test that I can't get a species that doesn't exist
-    #     with self.assertRaises(SpeciesError):
-    #         species = Species.get_species(name)
+        # test that I can't get a species that doesn't exist
+        # with self.assertRaises(SpeciesError):
+        #     species = Species.get_species(name)
 
     # def test_add_species(self):
     #     """

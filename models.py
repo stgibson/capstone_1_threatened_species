@@ -2,6 +2,10 @@ from __future__ import annotations
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from sqlalchemy.exc import IntegrityError
+import requests
+
+TOKEN = "336f836fea4b17ce7f45be3004f37456c3265c95df142c16383e8b7e6e2f2d86"
+BASE_URL = "https://apiv3.iucnredlist.org/api/v3/"
 
 db = SQLAlchemy()
 
@@ -129,6 +133,49 @@ class Species(db.Model):
         # use quotes for species name since two words
         return f'<Species id={self.id} name="{self.name}" \
 threatened={self.threatened}>'
+
+    @classmethod
+    def get_species(cls, species_name: str) -> Species | None:
+        """
+            Gets data of species with name species_name if it exists, returns
+            None otherwise
+            :type species_name: str
+            :rtype: Species | None
+        """
+
+        species = cls.query.filter_by(name=species_name).one_or_none()
+        # if in db
+        if species:
+            return species
+        # otherwise, pull from external API
+        name_supported_format = "%20".join(species_name.split(" "))
+        params = { "token": TOKEN }
+        try:
+            resp = requests.get(
+                f"{BASE_URL}species/{species_name}",
+                params=params
+            )
+            data = resp.json()
+            name = data["name"]
+
+            # species may or may not have info on threatened level
+            result = data.get("result", None)
+            if result:
+                threatened = result[0].get("category", None)
+                if threatened:
+                    species = cls(name=name, threatened=threatened)
+                    db.session.add(species)
+                    db.session.commit()
+                    return species
+
+            # just add species name if couldn't find threatened level
+            species = cls(name=name)
+            db.session.add(species)
+            db.session.commit()
+            return species
+        except:
+            return None
+        return None
 
 class City(db.Model):
     """
