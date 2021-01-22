@@ -225,3 +225,26 @@ create an account."
             return redirect("/home")
     flash(error_message, "danger")
     return redirect("/login")
+
+@app.route("/species/<int:species_id>", methods=["POST"])
+def add_species_to_list(species_id: int) -> str:
+    """
+        Adds species to user's list. If the species is already on user's list,
+        let user know.
+        :type species_id: int
+        :rtype: str
+    """
+
+    error_message = \
+            "You are not authorized for that action. Please first login or \
+    create an account."
+    user_id = session.get("current_user_id", None)
+    if user_id:
+        try:
+            Species.add_species(species_id, user_id)
+        except SpeciesError as exc:
+            flash(exc.message, "info")
+        finally:
+            return redirect("/home")
+    flash(error_message, "danger")
+    return redirect("/login")
