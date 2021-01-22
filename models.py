@@ -175,7 +175,7 @@ threatened={self.threatened}>'
             return species
         except:
             db.session.rollback()
-            raise SpeciesError(f"Could not find {species_name}")
+            raise SpeciesError(f"Could not find species {species_name}")
 
 class City(db.Model):
     """
