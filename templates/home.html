@@ -3,5 +3,72 @@
 {% block title %}Home Page{% endblock %}
 
 {% block content %}
-  <h1>Welcome!</h1>
+  <h1>
+    Welcome to Threatened Species!
+  </h1>
+  <div class="row">
+    <div class="col-6">
+      <form action="/species" method="GET">
+        <label>Search for species</label>
+        <input name="species" type="text">
+        <button class="btn btn-primary btn-sm">Search</button>
+      </form>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-6">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Species Name</th>
+            <th>Threatened Level</th>
+            <th>Add Species to List</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if species %}
+            <tr>
+              <td>{{species.name}}</td>
+              {% if species.threatened %}
+                <td>{{species.threatened}}</td>
+              {% else %}
+                <td> </td>
+              {% endif %}
+              <form action="/species/{{species.id}}" method="POST">
+                <button class="btn btn-success">Add</button>
+              </form>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+    <div class="col-6">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Species Name</th>
+            <th>Threatened Level</th>
+            <th>Remove Species from List</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if user.species %}
+            {% for species in user.species %}
+              <tr>
+                <td>{{species.name}}</td>
+                {% if species.threatened %}
+                  <td>{{species.threatened}}</td>
+                {% else %}
+                  <td> </td>
+                {% endif %}
+                <form action="/species/{{species.id}}/delete" method="POST">
+                  <button class="btn btn-success">Remove</button>
+                </form>
+              </tr>
+            {% endfor %}
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 {% endblock %}
