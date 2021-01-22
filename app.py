@@ -243,7 +243,28 @@ def add_species_to_list(species_id: int) -> str:
         try:
             Species.add_species(species_id, user_id)
         except SpeciesError as exc:
-            flash(exc.message, "info")
+            flash(exc.message, "danger")
+        finally:
+            return redirect("/home")
+    flash(error_message, "danger")
+    return redirect("/login")
+
+@app.route("/species/<int:species_id>/delete", methods=["POST"])
+def delete_species_from_list(species_id: int) -> str:
+    """
+        Deletes species from user's list. If the species isn't on user's list,
+        lets user know.
+    """
+
+    error_message = \
+            "You are not authorized for that action. Please first login or \
+    create an account."
+    user_id = session.get("current_user_id", None)
+    if user_id:
+        try:
+            Species.delete_species(species_id, user_id)
+        except SpeciesError as exc:
+            flash(exc.message, "danger")
         finally:
             return redirect("/home")
     flash(error_message, "danger")
