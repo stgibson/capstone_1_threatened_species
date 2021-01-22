@@ -186,51 +186,51 @@ threatened={threatened}>'
         with self.assertRaises(SpeciesError):
             species = Species.get_species("bad species")
 
-    # def test_add_species(self):
-    #     """
-    #         Tests can add species to user only if not already on user's list
-    #     """
+    def test_add_species(self):
+        """
+            Tests can add species to user only if not already on user's list
+        """
 
-    #     # first add a species and a user for testing
-    #     name = self.test_species1["name"]
-    #     threatened = self.test_species1["threatened"]
-    #     species = Species(name=name, threatened=threatened)
-    #     db.session.add(species)
-    #     db.session.commit()
-    #     species_id = species.id
+        # first add a species and a user for testing
+        name = self.test_species1["name"]
+        threatened = self.test_species1["threatened"]
+        species = Species(name=name, threatened=threatened)
+        db.session.add(species)
+        db.session.commit()
+        species_id = species.id
         
-    #     country = Country(name="Country")
-    #     db.session.add(country)
-    #     db.session.commit()
-    #     country_id = country.id
+        country = Country(name="Country")
+        db.session.add(country)
+        db.session.commit()
+        country_id = country.id
 
-    #     city = City(name="City", country_id=country_id)
-    #     db.session.add(country)
-    #     db.session.commit()
-    #     city_id = city.id
+        city = City(name="City", country_id=country_id)
+        db.session.add(city)
+        db.session.commit()
+        city_id = city.id
 
-    #     username = "user"
-    #     email = "email"
-    #     password = "password"
-    #     user = User(
-    #         username=username,
-    #         email=email,
-    #         password=password,
-    #         city_id=city_id
-    #     )
-    #     db.session.add(user)
-    #     db.session.commit()
-    #     user_id = user.id
+        username = "user"
+        email = "email"
+        password = "password"
+        user = User(
+            username=username,
+            email=email,
+            password=password,
+            city_id=city_id
+        )
+        db.session.add(user)
+        db.session.commit()
+        user_id = user.id
 
-    #     # test if can add species to user list
-    #     Species.add_species(species_id, user_id)
-    #     self.assertEqual(len(user.species), 1)
-    #     self.assertEqual(user.species[0].name, name)
-    #     self.assertEqual(user.species[0].threatened, threatened)
+        # test if can add species to user list
+        Species.add_species(species_id, user_id)
+        self.assertEqual(len(user.species), 1)
+        self.assertEqual(user.species[0].name, name)
+        self.assertEqual(user.species[0].threatened, threatened)
 
-    #     # test that will get error if try to add species already on user's list
-    #     with self.assertRaises(SpeciesError):
-    #         Species.add_species(species_id, user_id)
+        # test that will get error if try to add species already on user's list
+        with self.assertRaises(SpeciesError):
+            Species.add_species(species_id, user_id)
 
     # def test_delete_species(self):
     #     """

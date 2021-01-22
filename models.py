@@ -175,7 +175,31 @@ threatened={self.threatened}>'
             return species
         except:
             db.session.rollback()
-            raise SpeciesError(f"Could not find species {species_name}")
+            error_message = f"Could not find species {species_name}"
+            raise SpeciesError(error_message)
+
+    @classmethod
+    def add_species(cls, species_id: int, user_id: int) -> None:
+        """
+            Adds species with id species_id to list of species user with id
+            user_id likes. If species_id already on user's list, raise
+            exception.
+            :type species_id: int
+            :type user_id: int
+            :rtype: None
+        """
+        
+        user = User.query.get(user_id)
+        # if user has already added species to list, raise exception
+        if [species for species in user.species if species.id == species_id]:
+            species = cls.query.get(species_id)
+            error_message = \
+                f"You have already added species {species.name} to your list"
+            raise SpeciesError(error_message)
+        else:
+            species = cls.query.get(species_id)
+            user.species.append(species)
+            db.session.commit()
 
 class City(db.Model):
     """
@@ -233,8 +257,6 @@ class User_Species(db.Model):
 
     __tablename__ = "users_species"
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-
     user_id = db.Column(
         db.ForeignKey("users.id", ondelete="cascade"),
         primary_key=True
@@ -261,8 +283,6 @@ class Species_Country(db.Model):
     """
 
     __tablename__ = "species_countries"
-
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
     species_id = db.Column(
         db.ForeignKey("species.id", ondelete="cascade"),
