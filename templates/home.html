@@ -34,9 +34,11 @@
               {% else %}
                 <td> </td>
               {% endif %}
-              <form action="/species/{{species.id}}" method="POST">
-                <button class="btn btn-success">Add</button>
-              </form>
+              <td>
+                <form action="/species/{{species.id}}" method="POST">
+                  <button class="btn btn-success">Add</button>
+                </form>
+              </td>
             </tr>
           {% endif %}
         </tbody>
@@ -61,9 +63,11 @@
                 {% else %}
                   <td> </td>
                 {% endif %}
-                <form action="/species/{{species.id}}/delete" method="POST">
-                  <button class="btn btn-success">Remove</button>
-                </form>
+                <td>
+                  <form action="/species/{{species.id}}/delete" method="POST">
+                    <button class="btn btn-success">Remove</button>
+                  </form>
+                </td>
               </tr>
             {% endfor %}
           {% endif %}

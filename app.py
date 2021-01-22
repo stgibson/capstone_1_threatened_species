@@ -170,11 +170,26 @@ def logout() -> str:
     return redirect("/login")
 
 @app.route("/home")
-def show_home_page():
+def show_home_page() -> str:
+    """
+        Shows home page, along with list of user's liked species and a search
+        form to get data on species and add them to the user's list
+        :rtype: str
+    """
+
     error_message = \
         "You are not authorized to access that page. Please first login or \
 create an account."
-    if session.get("current_user", None):
-        return render_template("home.html")
+    user_id = session.get("current_user", None)
+    if user_id:
+        user = User.query.get(user_id)
+
+        species_id = session.get("species", None)
+        if species_id:
+            species = Species.query.get(species_id)
+            return render_template("home.html", user=user, species=species)
+
+        return render_template("home.html", user=user)
+
     flash(error_message, "danger")
     return redirect("/login")
