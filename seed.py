@@ -78,9 +78,8 @@ sample_users = [
         "city_id": cities[3].id
     }
 ]
-users = [User(username=user["username"], email=user["email"], \
-    password=user["password"], city_id=user["city_id"]) for user in \
-    sample_users]
+users = [User.signup(user["username"], user["email"], user["password"], \
+    user["city_id"]) for user in sample_users]
 db.session.add_all(users)
 db.session.commit()
 
