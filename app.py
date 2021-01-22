@@ -1,6 +1,6 @@
-from flask import Flask, render_template, redirect, flash, session
+from flask import Flask, render_template, redirect, flash, session, request
 from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db, User, Species, City, Country
+from models import db, connect_db, User, Species, City, Country, SpeciesError
 from forms import SignupForm, LoginForm
 from typing import TypeVar
 
@@ -52,7 +52,7 @@ def create_user(
             city_id = city.id
         # otherwise, add city to db
         else:
-            city = City(name=city_name)
+            city = City(name=city_name, country_id=country_id)
             db.session.add(city)
             db.session.commit()
             city_id = city.id
@@ -81,7 +81,7 @@ def login(user_id: int) -> None:
         :type user_id: int
     """
 
-    session["current_user"] = user_id
+    session["current_user_id"] = user_id
 
 @app.route("/")
 def go_to_home_page() -> str:
@@ -91,7 +91,7 @@ def go_to_home_page() -> str:
         :rtype: str
     """
 
-    if session.get("current_user", None):
+    if session.get("current_user_id", None):
         return redirect("/home")
     return redirect("/login")
 
@@ -107,7 +107,7 @@ def signup_form() -> str:
 
     # first verify that user isn't already logged in
     info_message = "You are already logged in!"
-    if session.get("current_user", None):
+    if session.get("current_user_id", None):
         flash(info_message, "info")
         return redirect("/home")
 
@@ -139,7 +139,7 @@ def login_form() -> str:
 
     # first verify that user isn't already logged in
     info_message = "You are already logged in!"
-    if session.get("current_user", None):
+    if session.get("current_user_id", None):
         flash(info_message, "info")
         return redirect("/home")
 
@@ -163,10 +163,12 @@ def logout() -> str:
         :rtype: str
     """
 
-    if session.get("current_user", None):
-        del session["current_user"]
+    if session.get("current_user_id", None):
+        del session["current_user_id"]
     else:
         flash("You are already logged out", "info")
+    if session.get("species_id"):
+        del session["species_id"]
     return redirect("/login")
 
 @app.route("/home")
@@ -180,11 +182,11 @@ def show_home_page() -> str:
     error_message = \
         "You are not authorized to access that page. Please first login or \
 create an account."
-    user_id = session.get("current_user", None)
+    user_id = session.get("current_user_id", None)
     if user_id:
         user = User.query.get(user_id)
 
-        species_id = session.get("species", None)
+        species_id = session.get("species_id", None)
         if species_id:
             species = Species.query.get(species_id)
             return render_template("home.html", user=user, species=species)
@@ -193,3 +195,27 @@ create an account."
 
     flash(error_message, "danger")
     return redirect("/login")
+
+@app.route("/species")
+def get_species_data() -> str:
+    """
+        Gets data on species user searched for, and adds it to the session if
+        it exists, otherwise lets user know the species doesn't exist
+        :rtype: str
+    """
+
+    species_name = request.args["species"]
+    # if user clicks search on blank input, remove species from page
+    if not species_name:
+        if session.get("species_id"):
+            del session["species_id"]
+        return redirect("/home")
+    try:
+        species = Species.get_species(species_name)
+        session["species_id"] = species.id
+    except SpeciesError as exc:
+        if session.get("species_id", None):
+            del session["species_id"]
+        flash(exc.message, "danger")
+    finally:
+        return redirect("/home")
