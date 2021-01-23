@@ -69,7 +69,7 @@ def create_user(
         city = City(name=city_name, country_id=country_id)
         db.session.add(city)
         db.session.commit()
-        city_id = city_id
+        city_id = city.id
 
     # add user to db
     return User.signup(username, email, password, city_id)
