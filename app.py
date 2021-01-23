@@ -13,6 +13,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 # app.config["SQLALCHEMY_ECHO"] = True
 
 UserOrNone = TypeVar("UserOrNone", User, None)
+MATCH_NUM = 10
 
 debug = DebugToolbarExtension(app)
 connect_db(app)
@@ -82,6 +83,24 @@ def login(user_id: int) -> None:
     """
 
     session["current_user_id"] = user_id
+
+def is_match(species_id: int, city_id: int) -> bool:
+    """
+        If MATCH_NUM users in city with id city_id like species with id
+        species_id, returns True, otherwise returns False
+        :type species_id: int
+        :type city_id: int
+        :rtype: bool
+    """
+
+    city = City.query.get(city_id)
+    num_of_users = 0
+    # count number of users in city that have species with id species.id
+    for user in city.users:
+        for species in user.species:
+            if species.id == species_id:
+                num_of_users += 1
+    return num_of_users == MATCH_NUM
 
 @app.route("/")
 def go_to_home_page() -> str:
