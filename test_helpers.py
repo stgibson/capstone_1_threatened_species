@@ -1,6 +1,6 @@
 from unittest import TestCase
 from models import db, User, Species, City, Country, TOKEN, BASE_URL
-from app import app, create_user, is_match
+from app import app, create_user, is_match, make_notification
 from sqlalchemy.exc import IntegrityError
 
 app.config["TESTING"] = True
@@ -282,3 +282,77 @@ class HelpersTestCase(TestCase):
         db.session.commit()
 
         self.assertFalse(is_match(species_id, city_id1))
+
+    def test_make_notification(self):
+        """
+            Tests get correct notification
+        """
+
+        species_name = self.species["name"]
+        species_threatened = self.species["threatened"]
+        species = Species(name=species_name, threatened=species_threatened)
+        db.session.add(species)
+        db.session.commit()
+        species_id = species.id
+
+        country_name = self.country
+        country = Country(name=country_name)
+        db.session.add(country)
+        db.session.commit()
+        country_id = country.id
+
+        city_name1 = self.cities[0]
+        city1 = City(name=city_name1, country_id=country_id)
+        db.session.add(city1)
+        db.session.commit()
+        city_id1 = city1.id
+
+        city_name2 = self.cities[1]
+        city2 = City(name=city_name2, country_id=country_id)
+        db.session.add(city2)
+        db.session.commit()
+        city_id2 = city2.id
+
+        # add (num_of_users - 1) users in city1 and 1 user in city2
+        num_of_users = len(self.users)
+        for i in range(num_of_users - 1):
+            user_data = self.users[i]
+            user = User(
+                username=user_data["username"],
+                email=user_data["email"],
+                password=user_data["password"],
+                city_id=city_id1
+            )
+            db.session.add(user)
+            db.session.commit()
+            user.species.append(species)
+            db.session.commit()
+        user_data = self.users[num_of_users - 1]
+        user = User(
+            username=user_data["username"],
+            email=user_data["email"],
+            password=user_data["password"],
+            city_id=city_id2
+        )
+        db.session.add(user)
+        db.session.commit()
+        user.species.append(species)
+        db.session.commit()
+
+        # make 2nd to last user get notification
+        user = User.query.filter_by(
+            username=self.users[num_of_users - 2]["username"]
+        ).one()
+        notification = make_notification(species_id, user.id)
+
+        # test that all but last 2 users in notification
+        for i in range(num_of_users - 2):
+            username = self.users[i]["username"]
+            email = self.users[i]["email"]
+            self.assertIn(username, notification)
+            self.assertIn(email, notification)
+        for i in range(num_of_users - 2, num_of_users):
+            username = self.users[i]["username"]
+            email = self.users[i]["email"]
+            self.assertNotIn(username, notification)
+            self.assertNotIn(email, notification)

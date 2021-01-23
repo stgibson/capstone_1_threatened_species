@@ -102,6 +102,29 @@ def is_match(species_id: int, city_id: int) -> bool:
                 num_of_users += 1
     return num_of_users == MATCH_NUM
 
+def make_notification(species_id: int, user_id: int) -> str:
+    """
+        Generate message that shares all users other than user with id user_id
+        who have species with id species_id in their list, that are in the same
+        city as user with id user_id
+        :type species_id: int
+        :type user_id: int
+        :rtype: str
+    """
+
+    user = User.query.get(user_id)
+    species = Species.query.get(species_id)
+    city_id = user.city_id
+    notification = \
+        f"Congratulations! You are the last of {MATCH_NUM} people in \
+{user.city.name}, {user.city.country.name} to add {species.name}! Here is a \
+list of the other users:"
+    # add users other than user with id user_id in city with id city_id to list
+    for user in species.users:
+        if user.city_id == city_id and user.id != user_id:
+            notification += f"\n{user.username} ({user.email})"
+    return notification
+
 @app.route("/")
 def go_to_home_page() -> str:
     """
@@ -261,6 +284,13 @@ def add_species_to_list(species_id: int) -> str:
     if user_id:
         try:
             Species.add_species(species_id, user_id)
+            # check if should notify user of other users who like the species
+            user = User.query.get(user_id)
+            if is_match(species_id, user.city_id):
+                notification = make_notification(species_id, user_id)
+                flash(notification, "success")
+            return redirect("/home")
+
         except SpeciesError as exc:
             flash(exc.message, "danger")
         finally:
