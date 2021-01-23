@@ -6,7 +6,6 @@ from sqlalchemy.exc import IntegrityError
 app.config["TESTING"] = True
 app.config["DEBUG_TB_HOST"] = ["dont-show-debug-toolbar"]
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///threatened-species-test"
-app.config["WTF_CSRF_ENABLED"] = False
 
 db.create_all()
 
