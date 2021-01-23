@@ -14,7 +14,7 @@ class SpeciesModelTestCase(TestCase):
         Tests for columns and methods in Species model
     """
 
-    def setUp(self):
+    def setUp(self) -> None:
         """
             Sets up database for next tests
         """
@@ -38,7 +38,7 @@ class SpeciesModelTestCase(TestCase):
         
         self.client = app.test_client()
 
-    def test_species_model(self):
+    def test_species_model(self) -> None:
         """
             Tests can create species with valid input
         """
@@ -135,7 +135,7 @@ threatened={threatened}>'
                 users_list[i]["password"]
             )
 
-    def test_species_model_fail(self):
+    def test_species_model_fail(self) -> None:
         """
             Tests fail to create species with invalid input
         """
@@ -164,7 +164,7 @@ threatened={threatened}>'
             db.session.commit()
         db.session.rollback()
 
-    def test_get_species(self):
+    def test_get_species(self) -> None:
         """
             Tests can get data on species only if it exists
         """
@@ -186,7 +186,7 @@ threatened={threatened}>'
         with self.assertRaises(SpeciesError):
             species = Species.get_species("bad species")
 
-    def test_add_species(self):
+    def test_add_species(self) -> None:
         """
             Tests can add species to user only if not already on user's list
         """
@@ -236,7 +236,7 @@ threatened={threatened}>'
         with self.assertRaises(SpeciesError):
             Species.add_species(0, user_id)
 
-    def test_delete_species(self):
+    def test_delete_species(self) -> None:
         """
             Tests can delete species from user only if in user's list
         """

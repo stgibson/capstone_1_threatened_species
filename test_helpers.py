@@ -15,7 +15,7 @@ class HelpersTestCase(TestCase):
         Tests helper functions in app.py
     """
 
-    def setUp(self):
+    def setUp(self) -> None:
         """
             Sets up database for next tests
         """
@@ -87,7 +87,7 @@ class HelpersTestCase(TestCase):
 
         self.client = app.test_client()
 
-    def test_create_user(self):
+    def test_create_user(self) -> None:
         """
             Tests can create user with username, email, password, city, and
             country.
@@ -184,3 +184,10 @@ class HelpersTestCase(TestCase):
             country1
         )
         self.assertIsNone(user)
+
+    def test_is_match(self) -> None:
+        """
+            Tests is_match(species_id) returns true only if species with id
+            species_id in 10 users' lists, and returns false otherwise
+        """
+

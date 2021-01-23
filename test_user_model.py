@@ -14,7 +14,7 @@ class UserModelTestCase(TestCase):
         Tests for columns and methods in User model
     """
 
-    def setUp(self):
+    def setUp(self) -> None:
         """
             Sets up database for next tests
         """
@@ -48,7 +48,7 @@ class UserModelTestCase(TestCase):
         
         self.client = app.test_client()
 
-    def test_user_model(self):
+    def test_user_model(self) -> None:
         """
             Tests can create user with valid input
         """
@@ -122,7 +122,7 @@ password={password} city_id={city_id}>"
                 species_list[i]["threatened"]
             )
 
-    def test_user_model_fail(self):
+    def test_user_model_fail(self) -> None:
         """
             Tests fail to create user with invalid input
         """
@@ -198,7 +198,7 @@ password={password} city_id={city_id}>"
             db.session.commit()
         db.session.rollback()
 
-    def test_signup(self):
+    def test_signup(self) -> None:
         """
             Tests signup only creates a new user with valid input
         """
@@ -230,7 +230,7 @@ password={password} city_id={city_id}>"
         user = User.signup(username2, email1, password2, city_id)
         self.assertIsNone(user)
 
-    def test_authenticate(self):
+    def test_authenticate(self) -> None:
         """
             Tests authenticate only returns user when valid credentials
             provided

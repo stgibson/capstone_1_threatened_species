@@ -16,11 +16,16 @@ class SpeciesError(Exception):
         Exception for errors with using Species models
     """
 
-    def __init__(self, message):
+    def __init__(self, message: str) -> None:
+        """
+            Constructor for SpeciesError
+            :type message: str
+        """
+
         self.message = message
         super().__init__(self.message)
 
-def connect_db(app):
+def connect_db(app) -> None:
     """
         Connects app to db
         :type app: Flask
