@@ -25,6 +25,20 @@ class SpeciesError(Exception):
         self.message = message
         super().__init__(self.message)
 
+class CountryError(Exception):
+    """
+        Exception for errors with using Country models
+    """
+
+    def __init__(self, message: str) -> None:
+        """
+            Constructor for CountryError
+            :type message: str
+        """
+
+        self.message = message
+        super().__init__(self.message)
+
 def connect_db(app) -> None:
     """
         Connects app to db
@@ -270,6 +284,8 @@ class Country(db.Model):
 
     name = db.Column(db.Text, nullable=False, unique=True)
 
+    code = db.Column(db.Text, nullable=False, unique=True)
+
     cities = db.relationship("City", backref="country")
 
     def __repr__(self) -> str:
@@ -278,7 +294,27 @@ class Country(db.Model):
             :rtype: str
         """
 
-        return f"<Country id={self.id} name={self.name}>"
+        return f"<Country id={self.id} name={self.name} code={self.code}>"
+
+    @classmethod
+    def get_countries(cls):
+        """
+            Gets all countries from Red List API
+        """
+
+        params = { "token": TOKEN }
+        try:
+            resp = requests.get(f"{BASE_URL}country/list", params=params)
+            data = resp.json()
+            results = data.results
+            for result in results:
+                country = Country(name=result.country, code=result.code)
+                db.session.add(country)
+            db.session.commit()
+        except:
+            db.session.rollback()
+            error_message = "Could not load countries"
+            raise SpeciesError(error_message)
 
 class User_Species(db.Model):
     """

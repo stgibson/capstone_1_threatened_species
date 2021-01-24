@@ -7,6 +7,7 @@ app.config["TESTING"] = True
 app.config["DEBUG_TB_HOST"] = ["dont-show-debug-toolbar"]
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///threatened-species-test"
 
+db.drop_all()
 db.create_all()
 
 class UserModelTestCase(TestCase):
@@ -25,7 +26,7 @@ class UserModelTestCase(TestCase):
         Country.query.delete()
 
         # create city and country for user to live in
-        country = Country(name="Country")
+        country = Country(name="Country", code="CO")
         db.session.add(country)
         db.session.commit()
 

@@ -7,6 +7,7 @@ app.config["TESTING"] = True
 app.config["DEBUG_TB_HOST"] = ["dont-show-debug-toolbar"]
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///threatened-species-test"
 
+db.drop_all()
 db.create_all()
 
 class SpeciesModelTestCase(TestCase):
@@ -74,12 +75,14 @@ threatened={threatened}>'
 
         # test if can access countries species exists in
         countries_list = [
-            { "name": "Country1" },
-            { "name": "Country2" }
+            { "name": "Country1", "code": "C1" },
+            { "name": "Country2", "code": "C2" }
         ]
         num_of_countries = len(countries_list)
-        countries = [Country(name=country["name"]) for country in \
-            countries_list]
+        countries = [Country(
+            name=country["name"],
+            code=country["code"]
+        ) for country in countries_list]
         for country in countries:
             species1.countries.append(country)
         db.session.commit()
@@ -148,6 +151,7 @@ threatened={threatened}>'
         db.session.commit()
 
         # now test creating a new species with invalid inputs
+        name2 = self.test_species2["name"]
         threatened2 = self.test_species2["threatened"]
 
         # test not including name
@@ -206,7 +210,7 @@ threatened={threatened}>'
         db.session.commit()
         species_id = species.id
         
-        country = Country(name="Country")
+        country = Country(name="Country", code="CO")
         db.session.add(country)
         db.session.commit()
         country_id = country.id
@@ -256,7 +260,7 @@ threatened={threatened}>'
         db.session.commit()
         species_id = species.id
         
-        country = Country(name="Country")
+        country = Country(name="Country", code="CO")
         db.session.add(country)
         db.session.commit()
         country_id = country.id
