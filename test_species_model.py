@@ -157,6 +157,13 @@ threatened={threatened}>'
             db.session.commit()
         db.session.rollback()
 
+        # test not including threatened
+        species = Species(name=name2)
+        db.session.add(species)
+        with self.assertRaises(IntegrityError):
+            db.session.commit()
+        db.session.rollback()
+
         # test using existing name
         species = Species(name=name1, threatened=threatened2)
         db.session.add(species)
