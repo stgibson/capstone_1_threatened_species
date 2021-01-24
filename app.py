@@ -198,6 +198,15 @@ def login_form() -> str:
         return redirect("/login")
     return render_template("login.html", form=form)
 
+@app.route("/about")
+def show_about_page() -> str:
+    """
+        Shows the about page
+        :rtype: str
+    """
+
+    return render_template("about.html")
+
 @app.route("/logout")
 def logout() -> str:
     """
