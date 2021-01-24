@@ -6,20 +6,9 @@ db.drop_all()
 db.create_all()
 
 # add sample countries
-sample_countries = [
-    {
-        "name": "United States"
-    },
-    {
-        "name": "Canada"
-    },
-    {
-        "name": "United Kingdom"
-    }
-]
-countries = [Country(name=country["name"]) for country in sample_countries]
-db.session.add_all(countries)
-db.session.commit()
+Country.get_countries()
+sample_country_codes = ["US", "CA", "GB"]
+countries = [Country.query.filter_by(code=code).one() for code in sample_country_codes]
 
 # add sample cities
 sample_cities = [
