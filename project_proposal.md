@@ -86,6 +86,8 @@ the site, other users may become aware of the user's username, email, and
 approximate location
 * Instructions on how to use the website are provided
 * Users can only search for a species in their country
+* Users are notified via email when the correct number of users in the same city
+like the same species
 * Allow users to view and modify their profile
 * Allow users to delete their accounts
 * Add an about page and contact us page
