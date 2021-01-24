@@ -306,15 +306,18 @@ class Country(db.Model):
         try:
             resp = requests.get(f"{BASE_URL}country/list", params=params)
             data = resp.json()
-            results = data.results
+            results = data["results"]
             for result in results:
-                country = Country(name=result.country, code=result.code)
+                country = Country(
+                    name=result["country"],
+                    code=result["isocode"]
+                )
                 db.session.add(country)
             db.session.commit()
         except:
             db.session.rollback()
             error_message = "Could not load countries"
-            raise SpeciesError(error_message)
+            raise CountryError(error_message)
 
 class User_Species(db.Model):
     """

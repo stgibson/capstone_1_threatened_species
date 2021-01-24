@@ -118,8 +118,21 @@ code={country.code}>"
             db.session.commit()
         db.session.rollback()
 
-    # def test_get_countries(self) -> None:
-    #     """
-    #         Tests can get countries from external API
-    #     """
+    def test_get_countries(self) -> None:
+        """
+            Tests can get countries from external API
+        """
 
+        Country.get_countries()
+
+        us = Country.query.filter_by(code="US").one_or_none()
+        gb = Country.query.filter_by(code="GB").one_or_none()
+
+        self.assertIsNotNone(us)
+        self.assertEqual(us.name, "United States of America")
+
+        self.assertIsNotNone(gb)
+        self.assertEqual(
+            gb.name,
+            "United Kingdom of Great Britain and Northern Ireland"
+        )
