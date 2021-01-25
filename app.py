@@ -37,37 +37,21 @@ def create_user(
         :rtype: User | None
     """
 
-    # if city and/or country are not in db, add them 1st
-    country_name = country
+    country_code = country
     city_name = city
     country_id = None
     city_id = None
 
-    country = Country.query.filter_by(name=country_name).one_or_none()
-    # if the country is in db, get its id
-    if country:
-        country_id = country.id
+    # country must be in db cause selected by user
+    country = Country.query.filter_by(code=country_code).one()
+    country_id = country.id
 
-        city = City.query.filter_by(name=city_name).one_or_none()
-        # if the city is in db, get its id
-        if city:
-            city_id = city.id
-        # otherwise, add city to db
-        else:
-            city = City(name=city_name, country_id=country_id)
-            db.session.add(city)
-            db.session.commit()
-            city_id = city.id
-
-    # otherwise, add the country and city to db
+    city = City.query.filter_by(name=city_name).one_or_none()
+    # if the city is in db, get its id
+    if city:
+        city_id = city.id
+    # otherwise, add city to db
     else:
-        # add country
-        country = Country(name=country_name)
-        db.session.add(country)
-        db.session.commit()
-        country_id = country.id
-
-        # add city
         city = City(name=city_name, country_id=country_id)
         db.session.add(city)
         db.session.commit()
