@@ -73,116 +73,116 @@ db.session.add_all(users)
 db.session.commit()
 
 # add sample species
-sample_species = [
-    {
-        "name": "loxodonta africana",
-        "threatened": "VU"
-    },
-    {
-        "name": "canis lupus",
-        "threatened": "LC"
-    },
-    {
-        "name": "acinonyx jubatus",
-        "threatened": "VU"
-    },
-    {
-        "name": "panthera tigris",
-        "threatened": "EN"
-    },
-    {
-        "name": "gorilla beringei",
-        "threatened": "CR"
-    }
-]
-species = [Species(name=species["name"], threatened=species["threatened"]) \
-    for species in sample_species]
-db.session.add_all(species)
-db.session.commit()
+# sample_species = [
+#     {
+#         "name": "loxodonta africana",
+#         "threatened": "VU"
+#     },
+#     {
+#         "name": "canis lupus",
+#         "threatened": "LC"
+#     },
+#     {
+#         "name": "acinonyx jubatus",
+#         "threatened": "VU"
+#     },
+#     {
+#         "name": "panthera tigris",
+#         "threatened": "EN"
+#     },
+#     {
+#         "name": "gorilla beringei",
+#         "threatened": "CR"
+#     }
+# ]
+# species = [Species(name=species["name"], threatened=species["threatened"]) \
+#     for species in sample_species]
+# db.session.add_all(species)
+# db.session.commit()
 
-# add sample users_species
-sample_users_species = [
-    {
-        "user_id": users[0].id,
-        "species_id": species[0].id
-    },
-    {
-        "user_id": users[0].id,
-        "species_id": species[1].id
-    },
-    {
-        "user_id": users[1].id,
-        "species_id": species[1].id
-    },
-    {
-        "user_id": users[2].id,
-        "species_id": species[1].id
-    },
-    {
-        "user_id": users[2].id,
-        "species_id": species[2].id
-    },
-    {
-        "user_id": users[3].id,
-        "species_id": species[3].id
-    },
-    {
-        "user_id": users[4].id,
-        "species_id": species[3].id
-    },
-    {
-        "user_id": users[4].id,
-        "species_id": species[4].id
-    }
-]
-users_species = [User_Species(user_id=user_species["user_id"], \
-    species_id=user_species["species_id"]) for user_species in \
-    sample_users_species]
-db.session.add_all(users_species)
-db.session.commit()
+# # add sample users_species
+# sample_users_species = [
+#     {
+#         "user_id": users[0].id,
+#         "species_id": species[0].id
+#     },
+#     {
+#         "user_id": users[0].id,
+#         "species_id": species[1].id
+#     },
+#     {
+#         "user_id": users[1].id,
+#         "species_id": species[1].id
+#     },
+#     {
+#         "user_id": users[2].id,
+#         "species_id": species[1].id
+#     },
+#     {
+#         "user_id": users[2].id,
+#         "species_id": species[2].id
+#     },
+#     {
+#         "user_id": users[3].id,
+#         "species_id": species[3].id
+#     },
+#     {
+#         "user_id": users[4].id,
+#         "species_id": species[3].id
+#     },
+#     {
+#         "user_id": users[4].id,
+#         "species_id": species[4].id
+#     }
+# ]
+# users_species = [User_Species(user_id=user_species["user_id"], \
+#     species_id=user_species["species_id"]) for user_species in \
+#     sample_users_species]
+# db.session.add_all(users_species)
+# db.session.commit()
 
-# add sample species_countries
-sample_species_countries = [
-    {
-        "species_id": species[0].id,
-        "country_id": countries[0].id
-    },
-    {
-        "species_id": species[1].id,
-        "country_id": countries[0].id
-    },
-    {
-        "species_id": species[1].id,
-        "country_id": countries[1].id
-    },
-    {
-        "species_id": species[2].id,
-        "country_id": countries[0].id
-    },
-    {
-        "species_id": species[2].id,
-        "country_id": countries[2].id
-    },
-    {
-        "species_id": species[3].id,
-        "country_id": countries[2].id
-    },
-    {
-        "species_id": species[4].id,
-        "country_id": countries[0].id
-    },
-    {
-        "species_id": species[4].id,
-        "country_id": countries[1].id
-    },
-    {
-        "species_id": species[4].id,
-        "country_id": countries[2].id
-    }
-]
-species_countries = \
-    [Species_Country(species_id=species_country["species_id"], \
-    country_id=species_country["country_id"]) for species_country in \
-    sample_species_countries]
-db.session.add_all(species_countries)
-db.session.commit()
+# # add sample species_countries
+# sample_species_countries = [
+#     {
+#         "species_id": species[0].id,
+#         "country_id": countries[0].id
+#     },
+#     {
+#         "species_id": species[1].id,
+#         "country_id": countries[0].id
+#     },
+#     {
+#         "species_id": species[1].id,
+#         "country_id": countries[1].id
+#     },
+#     {
+#         "species_id": species[2].id,
+#         "country_id": countries[0].id
+#     },
+#     {
+#         "species_id": species[2].id,
+#         "country_id": countries[2].id
+#     },
+#     {
+#         "species_id": species[3].id,
+#         "country_id": countries[2].id
+#     },
+#     {
+#         "species_id": species[4].id,
+#         "country_id": countries[0].id
+#     },
+#     {
+#         "species_id": species[4].id,
+#         "country_id": countries[1].id
+#     },
+#     {
+#         "species_id": species[4].id,
+#         "country_id": countries[2].id
+#     }
+# ]
+# species_countries = \
+#     [Species_Country(species_id=species_country["species_id"], \
+#     country_id=species_country["country_id"]) for species_country in \
+#     sample_species_countries]
+# db.session.add_all(species_countries)
+# db.session.commit()
