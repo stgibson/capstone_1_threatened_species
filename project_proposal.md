@@ -91,6 +91,7 @@ like the same species
 * Allow users to view and modify their profile
 * Allow users to delete their accounts
 * Add an about page and contact us page
+* Alphabetize country names for dropdown for users to sign up
 * Also display common name(s) for species to user
 * Make threatened level name more user friendly
 * User selects country from a dropdown
