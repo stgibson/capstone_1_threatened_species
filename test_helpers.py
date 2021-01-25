@@ -82,8 +82,16 @@ class HelpersTestCase(TestCase):
             }
         ]
         self.species = { "name": "species", "threatened": "VU" }
-        self.country = "Country"
         self.cities = ["City1", "City2"]
+
+        # add country to db
+        country_name = "Country"
+        country_code = "CO"
+        country = Country(name=country_name, code=country_code)
+        db.session.add(country)
+        db.session.commit()
+        self.country_id = country.id
+        self.country_code = country_code
 
         self.client = app.test_client()
 
@@ -93,106 +101,76 @@ class HelpersTestCase(TestCase):
             country.
         """
 
-        # test if can create user in country not in db
+        # test if can create user in city not in db
         user1 = self.users[0]
         username1 = user1["username"]
         email1 = user1["email"]
         password1 = user1["password"]
-        country_name = self.country
-        city_name1 = self.cities[0]
+        city_name = self.cities[0]
+        country_id = self.country_id
+        country_code = self.country_code
         user = create_user(
             username1,
             email1,
             password1,
-            city_name1,
-            country_name)
+            city_name,
+            country_code
+        )
 
-        country = Country.query.filter_by(name=country_name).one_or_none()
-        self.assertIsNotNone(country)
-        self.assertEqual(country.name, country_name)
-        country_id = country.id
-
-        city = City.query.filter_by(name=city_name1).one_or_none()
+        city = City.query.filter_by(name=city_name).one_or_none()
         self.assertIsNotNone(city)
-        self.assertEqual(city.name, city_name1)
+        self.assertEqual(city.name, city_name)
         self.assertEqual(city.country_id, country_id)
         city_id = city.id
-        
+
         self.assertIsNotNone(user)
         self.assertEqual(user.username, username1)
         self.assertEqual(user.email, email1)
         # verify encryption
         self.assertNotEqual(user.password, password1)
-        self.assertEqual(user.city_id, city_id)
+        self.assertEqual(user.city_id, city_id)   
 
-        # test if can create user in city not in db but in country in db
+        # test if can create user in city in db
         user2 = self.users[1]
         username2 = user2["username"]
         email2 = user2["email"]
         password2 = user2["password"]
-        city_name2 = self.cities[1]
         user = create_user(
             username2,
             email2,
             password2,
-            city_name2,
-            country_name
+            city_name,
+            country_code
         )
-
-        city = City.query.filter_by(name=city_name2).one_or_none()
-        self.assertIsNotNone(city)
-        self.assertEqual(city.name, city_name2)
-        self.assertEqual(city.country_id, country_id)
-        city_id = city.id
 
         self.assertIsNotNone(user)
         self.assertEqual(user.username, username2)
         self.assertEqual(user.email, email2)
         # verify encryption
         self.assertNotEqual(user.password, password2)
-        self.assertEqual(user.city_id, city_id)   
+        self.assertEqual(user.city_id, city_id) 
 
-        # test if can create user in city and country in db
+        # test that can't create user with existing username
         user3 = self.users[2]
         username3 = user3["username"]
         email3 = user3["email"]
         password3 = user3["password"]
         user = create_user(
-            username3,
+            username2,
             email3,
             password3,
-            city_name2,
-            country_name
-        )
-
-        self.assertIsNotNone(user)
-        self.assertEqual(user.username, username3)
-        self.assertEqual(user.email, email3)
-        # verify encryption
-        self.assertNotEqual(user.password, password3)
-        self.assertEqual(user.city_id, city_id) 
-
-        # test that can't create user with existing username
-        user4 = self.users[3]
-        username4 = user4["username"]
-        email4 = user4["email"]
-        password4 = user4["password"]
-        user = create_user(
-            username3,
-            email4,
-            password4,
-            city_name2,
-            country_name
+            city_name,
+            country_code
         )
         self.assertIsNone(user)
 
         # test that can't create user with existing email
         user = create_user(
-            username4,
-            email3,
-            password4,
-            city_name2,
-            country_name
+            username3,
+            email2,
+            password3,
+            city_name,
+            country_code
         )
         self.assertIsNone(user)
 
@@ -210,11 +188,7 @@ class HelpersTestCase(TestCase):
         db.session.commit()
         species_id = species.id
 
-        country_name = self.country
-        country = Country(name=country_name)
-        db.session.add(country)
-        db.session.commit()
-        country_id = country.id
+        country_id = self.country_id
 
         city_name1 = self.cities[0]
         city1 = City(name=city_name1, country_id=country_id)
@@ -294,11 +268,7 @@ class HelpersTestCase(TestCase):
         db.session.commit()
         species_id = species.id
 
-        country_name = self.country
-        country = Country(name=country_name)
-        db.session.add(country)
-        db.session.commit()
-        country_id = country.id
+        country_id = self.country_id
 
         city_name1 = self.cities[0]
         city1 = City(name=city_name1, country_id=country_id)
