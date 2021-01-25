@@ -83,8 +83,15 @@ class FlaskTestCase(TestCase):
             }
         ]
         self.species = { "name": "species", "threatened": "VU" }
-        self.country = "Country"
         self.city = "City1"
+
+        # add country to db
+        country_name = "Country"
+        country_code = "CO"
+        country = Country(name=country_name, code=country_code)
+        db.session.add(country)
+        db.session.commit()
+        self.country_id = country.id
 
         self.client = app.test_client()
 
@@ -102,14 +109,8 @@ class FlaskTestCase(TestCase):
         db.session.commit()
         species_id = species.id
 
-        country_name = self.country
-        country = Country(name=country_name)
-        db.session.add(country)
-        db.session.commit()
-        country_id = country.id
-
         city_name = self.city
-        city = City(name=city_name, country_id=country_id)
+        city = City(name=city_name, country_id=self.country_id)
         db.session.add(city)
         db.session.commit()
         city_id = city.id
