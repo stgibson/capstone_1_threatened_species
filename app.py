@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, flash, session, request
 from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db, User, Species, City, Country, SpeciesError
+from models import db, connect_db, User, Species, City, Country
+from models import SpeciesError, CountryError
 from forms import SignupForm, LoginForm
 from typing import TypeVar
 
@@ -156,6 +157,22 @@ def signup_form() -> str:
     error_message = \
         "That username or email has already been taken. Please try again."
     form = SignupForm()
+
+    # get countries for user to select
+    countries = Country.query.all()
+    # if first time a user goes on this page, need to pull from API
+    if len(countries) == 0:
+        try:
+            Country.get_countries()
+            countries = Country.query.all()
+        except CountryError as exc:
+            flash(exc.message, "danger")
+            return redirect("/")
+    country_choices = []
+    for country in countries:
+        country_choices.append((country.code, country.name))
+    form.country.choices = country_choices
+
     if form.validate_on_submit():
         username = form.username.data
         email = form.email.data

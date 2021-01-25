@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField
+from wtforms import StringField, PasswordField, BooleanField, SelectField
 from wtforms.validators import InputRequired, Email, DataRequired
 
 class SignupForm(FlaskForm):
@@ -15,7 +15,7 @@ class SignupForm(FlaskForm):
 
     city = StringField("City", validators=[InputRequired()])
 
-    country = StringField("Country", validators=[InputRequired()])
+    country = SelectField("Country")
 
     accept_terms = BooleanField(
         "By checking this box, you understand and agree that if your list of \
