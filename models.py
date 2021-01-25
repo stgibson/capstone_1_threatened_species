@@ -163,18 +163,24 @@ class Species(db.Model):
 threatened={self.threatened}>'
 
     @classmethod
-    def get_species(cls, species_name: str) -> Species | None:
+    def get_species(cls, species_name: str, country_id: int) -> Species | None:
         """
-            Gets data of species with name species_name if it exists, returns
-            None otherwise
+            Gets data of species with name species_name if it exists in country
+            with id country_id, returns None otherwise
             :type species_name: str
+            :type country_id: int
             :rtype: Species | None
         """
 
         species = cls.query.filter_by(name=species_name).one_or_none()
-        # if in db
+        # if in db and species is in the country the user is in
         if species:
-            return species
+            if [country for country in species.countries if \
+                country.id == country_id]:
+                return species
+            # if species exists but not in country, raise exception
+            error_message = f"{species_name} is not in your country"
+            raise SpeciesError(error_message)
         # otherwise, pull from external API
         name_supported_format = "%20".join(species_name.split(" "))
         params = { "token": TOKEN }
@@ -191,6 +197,20 @@ threatened={self.threatened}>'
             species = cls(name=name, threatened=threatened)
             db.session.add(species)
             db.session.commit()
+
+            # add countries species is in
+            resp = requests.get(
+                f"{BASE_URL}species/countries/name/{name_supported_format}",
+                params=params
+            )
+            data = resp.json()
+            result = data["result"]
+            for country in result:
+                code = country["code"]
+                country = Country.query.filter_by(code=code).one()
+                species.countries.append(country)
+            db.session.commit()
+
             return species
         except:
             db.session.rollback()

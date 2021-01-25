@@ -34,8 +34,6 @@ class SpeciesModelTestCase(TestCase):
             "name": "species2",
             "threatened": "VU"
         }
-
-        self.sample_species_name = "loxodonta africana"
         
         self.client = app.test_client()
 
@@ -177,25 +175,43 @@ threatened={threatened}>'
 
     def test_get_species(self) -> None:
         """
-            Tests can get data on species only if it exists
+            Tests can get data on species only if it exists and in specified
+            country
         """
 
+        # first generate countries
+        Country.get_countries()
+
+        country_fail_code = "US"
+        country_fail = Country.query.filter_by(code=country_fail_code).one()
+        country_fail_id = country_fail.id
+
+        country_success_code = "ET"
+        country_success = Country.query.filter_by(
+            code=country_success_code
+        ).one()
+        country_success_id = country_success.id
+
         # test if I can get a species that exists but isn't in db
-        name = self.sample_species_name
-        species = Species.get_species(name)
+        species_name = "loxodonta africana"
+        species = Species.get_species(species_name, country_success_id)
 
         self.assertIsNotNone(species)
-        self.assertEqual(species.name, name)
+        self.assertEqual(species.name, species_name)
 
         # test if I can get the same species not that it's in db
-        species = Species.get_species(name)
+        species = Species.get_species(species_name, country_success_id)
 
         self.assertIsNotNone(species)
-        self.assertEqual(species.name, name)
+        self.assertEqual(species.name, species_name)
 
         # test that I can't get a species that doesn't exist
         with self.assertRaises(SpeciesError):
-            species = Species.get_species("bad species")
+            species = Species.get_species("bad species", country_success_id)
+
+        # test that I can't get species if I'm in a country it doesn't exist
+        with self.assertRaises(SpeciesError):
+            species = Species.get_species(species_name, country_fail_id)
 
     def test_add_species(self) -> None:
         """
