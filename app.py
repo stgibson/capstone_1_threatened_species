@@ -296,6 +296,11 @@ def add_species_to_list(species_id: int) -> str:
     if user_id:
         try:
             Species.add_species(species_id, user_id)
+
+            # after adding species, doesn't need to be on left side of page
+            if session.get("species_id", None):
+                del session["species_id"]
+
             # check if should notify user of other users who like the species
             user = User.query.get(user_id)
             if is_match(species_id, user.city_id):
