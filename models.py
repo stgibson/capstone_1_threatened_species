@@ -172,6 +172,8 @@ threatened={self.threatened}>'
             :rtype: Species | None
         """
 
+        # keep all letters lowercase for consistency in db
+        species_name = species_name.lower()
         species = cls.query.filter_by(name=species_name).one_or_none()
         # if in db and species is in the country the user is in
         if species:
