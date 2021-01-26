@@ -1,9 +1,11 @@
 from flask import Flask, render_template, redirect, flash, session, request
 from flask_debugtoolbar import DebugToolbarExtension
+from flask_mail import Mail, Message
 from models import db, connect_db, User, Species, City, Country
 from models import SpeciesError, CountryError
 from forms import SignupForm, LoginForm
 from typing import TypeVar
+from vars import PASSWORD
 
 app = Flask(__name__)
 
@@ -13,11 +15,23 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///threatened-species"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 # app.config["SQLALCHEMY_ECHO"] = True
 
+mail_settings = {
+    "MAIL_SERVER": "smtp.gmail.com",
+    "MAIL_PORT": 465,
+    "MAIL_USE_TLS": False,
+    "MAIL_USE_SSL": True,
+    "MAIL_USERNAME": "seanthomasgibson@gmail.com",
+    "MAIL_PASSWORD": PASSWORD
+}
+app.config.update(mail_settings)
+
 UserOrNone = TypeVar("UserOrNone", User, None)
 MATCH_NUM = 10
 
 debug = DebugToolbarExtension(app)
 connect_db(app)
+
+mail = Mail(app)
 
 def create_user(
     username: str,
@@ -101,9 +115,9 @@ def make_notification(species_id: int, user_id: int) -> str:
     species = Species.query.get(species_id)
     city_id = user.city_id
     notification = \
-        f"Congratulations! You are the last of {MATCH_NUM} people in \
-{user.city.name}, {user.city.country.name} to add {species.name}! Here is a \
-list of the other users:"
+        f"Congratulations! You and {MATCH_NUM - 1} other people in \
+{user.city.name}, {user.city.country.name} have {species.name} in their \
+lists!  Here is a list of the other users:"
     # add users other than user with id user_id in city with id city_id to list
     for user in species.users:
         if user.city_id == city_id and user.id != user_id:
@@ -302,10 +316,22 @@ def add_species_to_list(species_id: int) -> str:
                 del session["species_id"]
 
             # check if should notify user of other users who like the species
-            user = User.query.get(user_id)
-            if is_match(species_id, user.city_id):
-                notification = make_notification(species_id, user_id)
-                flash(notification, "success")
+            curr_user = User.query.get(user_id)
+            species = Species.query.get(species_id)
+            if is_match(species_id, curr_user.city_id):
+                # send email to each user in the same city who like the species
+                for user in [user for user in species.users if \
+                    user.city_id == curr_user.city_id]:
+                    notification = make_notification(species_id, user.id)
+                    print(notification)
+                    with app.app_context():
+                        msg = Message(
+                            subject="Threatened Species Website",
+                            sender=app.config.get("MAIL_USERNAME"),
+                            recipients=[user.email],
+                            body=notification
+                        )
+                        mail.send(msg)
             return redirect("/home")
 
         except SpeciesError as exc:
