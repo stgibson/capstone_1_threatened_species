@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block title %}Edit{% endblock %}
+
+{% block content %}
+  <form method="POST" action="/edit">
+    {% include "form.html" %}
+    <button class="btn btn-primary" type="submit">Edit</button>
+  </form>
+{% endblock %}
