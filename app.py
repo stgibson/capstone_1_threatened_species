@@ -363,8 +363,8 @@ def add_species_to_list(species_id: int) -> str:
     """
 
     error_message = \
-            "You are not authorized for that action. Please first login or \
-    create an account."
+        "You are not authorized for that action. Please first login or create \
+an account."
     user_id = session.get("current_user_id", None)
     if user_id:
         try:
@@ -409,8 +409,8 @@ def delete_species_from_list(species_id: int) -> str:
     """
 
     error_message = \
-            "You are not authorized for that action. Please first login or \
-    create an account."
+        "You are not authorized for that action. Please first login or create \
+an account."
     user_id = session.get("current_user_id", None)
     if user_id:
         try:
@@ -430,8 +430,8 @@ def edit_profile_form() -> str:
     """
 
     error_message = \
-            "You are not authorized for that action. Please first login or \
-    create an account."
+        "You are not authorized for that action. Please first login or \
+create an account."
     user_id = session.get("current_user_id", None)
     if user_id:
         user = User.query.get(user_id)
@@ -464,9 +464,35 @@ def edit_profile_form() -> str:
                 edit_profile(user_id, username, email, city, country)
                 return redirect("/")
             # otherwise, flash error message
-            flash("Incorrect password. Could not edit profile", "danger")
+            flash("Incorrect password. Could not edit profile.", "danger")
             return redirect("/edit")
         return render_template("edit.html", form=form)
+
+    flash(error_message, "danger")
+    return redirect("/login")
+
+@app.route("/delete", methods=["POST"])
+def delete_user() -> str:
+    """
+        Deletes the user's account only if the user is logged in
+        :rtype: str
+    """
+
+    error_message = \
+        "You are not authorized for that action. Please first login or create \
+create an account."
+    user_id = session.get("current_user_id", None)
+    password = request.form["password"]
+    if user_id:
+        user = User.query.get(user_id)
+        if User.authenticate(user.username, password):
+            db.session.delete(user)
+            db.session.commit()
+            del session["current_user_id"]
+            flash("Your account has been deleted", "info")
+            return redirect("/login")
+        flash("Incorrect password. Could not delete account.", "danger")
+        return redirect("/edit")
 
     flash(error_message, "danger")
     return redirect("/login")

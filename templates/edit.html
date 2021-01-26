@@ -3,8 +3,13 @@
 {% block title %}Edit{% endblock %}
 
 {% block content %}
-  <form method="POST" action="/edit">
+  <form method="POST">
     {% include "form.html" %}
-    <button class="btn btn-primary" type="submit">Edit</button>
+    <button class="btn btn-primary" type="submit" formaction="/edit">
+      Edit
+    </button>
+    <button class="btn btn-danger" type="submit" formaction="/delete">
+      Delete Account
+    </button>
   </form>
 {% endblock %}
