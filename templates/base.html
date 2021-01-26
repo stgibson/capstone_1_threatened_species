@@ -18,6 +18,7 @@
         <a class="navbar-brand" href="/">Home</a>
         <a class="nav-item" href="/about">About</a>
         {% if session.get("current_user_id") %}
+          <a class="nav-item" href="/edit">Edit Profile</a>
           <a class="nav-item" href="/logout">Logout</a>
         {% endif %}
       </nav>
