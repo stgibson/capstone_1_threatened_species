@@ -44,7 +44,7 @@ sample_users = [
     },
     {
         "username": "seangibson",
-        "email": "seangibson@comcast.net",
+        "email": "seanthomasgibson@gmail.com",
         "password": "password",
         "city_id": cities[0].id
     },
