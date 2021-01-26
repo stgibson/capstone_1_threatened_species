@@ -35,3 +35,21 @@ class LoginForm(FlaskForm):
     username = StringField("Username", validators=[InputRequired()])
 
     password = PasswordField("Password", validators=[InputRequired()])
+
+class EditForm(FlaskForm):
+    """
+        Template for users to edit their profile
+    """
+
+    username = StringField("Username", validators=[InputRequired()])
+
+    email = StringField("Email", validators=[Email()])
+
+    city = StringField("City", validators=[InputRequired()])
+
+    country = SelectField("Country")
+
+    password = PasswordField(
+        "Confirm changes by entering your password",
+        validators=[InputRequired()]
+    )
