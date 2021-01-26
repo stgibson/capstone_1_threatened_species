@@ -1,0 +1,2 @@
+Learned how to connect Flask-Mail to GMail at https://www.twilio.com/blog/2018/
+    03/send-email-programmatically-with-gmail-python-and-flask.html
