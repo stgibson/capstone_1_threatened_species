@@ -97,8 +97,8 @@ like the same species
 * User selects country from a dropdown
 * The user can choose to be notified of other users based on county, state, or a
 specified radius from the user's location
-* The server will determine which country the user is in based on the city the
-user is in
+* The user's species list will update if the user edits country in the user's
+profile
 * The user can also input a state or province, based on their country
 * When users are notified of each other, they can create a joint document to
 store contact information or create a plan for helping their mutual species
