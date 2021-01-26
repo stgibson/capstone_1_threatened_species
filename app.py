@@ -3,7 +3,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from flask_mail import Mail, Message
 from models import db, connect_db, User, Species, City, Country
 from models import SpeciesError, CountryError
-from forms import SignupForm, LoginForm
+from forms import SignupForm, LoginForm, EditForm
 from typing import TypeVar
 from vars import PASSWORD
 
@@ -82,6 +82,65 @@ def login(user_id: int) -> None:
     """
 
     session["current_user_id"] = user_id
+
+def edit_profile(user_id: int, username: str, email: str, city: str, country: str) -> None:
+    """
+        Edits profile of user with id user_id
+        :type user_id: in
+        :type username: str
+        :type email: str
+        :type city: str
+        :type country: str
+    """
+
+    user = User.query.get(user_id)
+    user.username = username
+    user.email = email
+    db.session.add(user)
+    db.session.commit()
+
+    country_code = country
+    city_name = city
+    country_id =  None
+    city_id = None
+    if user.city.country.code == country_code:
+        country_id = user.city.country.id
+    if user.city.name == city_name:
+        city_id = user.city.id
+
+    if country_id:
+        country = Country.query.get(country_id)
+        # if city has changed, check if in country
+        if not city_id:
+            city_id_list = [city.id for city in country.cities if \
+                city.name == city_name]
+            if city_id_list:
+                # should only be 1 city with that name in the country
+                city_id = city_id_list[0]
+                user.city_id = city_id
+                db.session.add(user)
+                db.session.commit()
+            # otherwise need to add city to db
+            else:
+                city = City(name=city_name, country_id=country_id)
+                db.session.add(city)
+                db.session.commit()
+                city_id = city.id
+                user.city_id = city_id
+                db.session.add(user)
+                db.session.commit()
+    # if country has changed, get new country and city
+    else:
+        country = Country.query.filter_by(code=country_code).one()
+        country_id = country.id
+        # even if city hasn't changed, since in different country, need to add
+        city = City(name=city_name, country_id=country_id)
+        db.session.add(city)
+        db.session.commit()
+        city_id = city.id
+        user.city_id = city_id
+        db.session.add(user)
+        db.session.commit()
 
 def is_match(species_id: int, city_id: int) -> bool:
     """
@@ -323,7 +382,6 @@ def add_species_to_list(species_id: int) -> str:
                 for user in [user for user in species.users if \
                     user.city_id == curr_user.city_id]:
                     notification = make_notification(species_id, user.id)
-                    print(notification)
                     with app.app_context():
                         msg = Message(
                             subject="Threatened Species Website",
@@ -361,5 +419,54 @@ def delete_species_from_list(species_id: int) -> str:
             flash(exc.message, "danger")
         finally:
             return redirect("/home")
+    flash(error_message, "danger")
+    return redirect("/login")
+
+@app.route("/edit", methods=["GET", "POST"])
+def edit_profile_form() -> str:
+    """
+        Edits user's profile, provided they entered valid credentials
+        :rtype: str
+    """
+
+    error_message = \
+            "You are not authorized for that action. Please first login or \
+    create an account."
+    user_id = session.get("current_user_id", None)
+    if user_id:
+        user = User.query.get(user_id)
+        form = EditForm(username=user.username, email=user.email, city=user.city.name, country=user.city.country.code)
+
+        # get countries for user to select
+        countries = Country.query.all()
+        # if first time a user goes on this page, need to pull from API
+        if len(countries) == 0:
+            try:
+                Country.get_countries()
+                countries = Country.query.all()
+            except CountryError as exc:
+                flash(exc.message, "danger")
+                return redirect("/")
+        country_choices = []
+        for country in countries:
+            country_choices.append((country.code, country.name))
+        form.country.choices = country_choices
+
+        if form.validate_on_submit():
+            username = form.username.data
+            email = form.email.data
+            city = form.city.data
+            country = form.country.data
+            password = form.password.data
+
+            # if user typed in right password, make changes
+            if User.authenticate(user.username, password):
+                edit_profile(user_id, username, email, city, country)
+                return redirect("/")
+            # otherwise, flash error message
+            flash("Incorrect password. Could not edit profile", "danger")
+            return redirect("/edit")
+        return render_template("edit.html", form=form)
+
     flash(error_message, "danger")
     return redirect("/login")

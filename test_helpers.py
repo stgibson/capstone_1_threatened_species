@@ -1,6 +1,6 @@
 from unittest import TestCase
 from models import db, User, Species, City, Country, TOKEN, BASE_URL
-from app import app, create_user, is_match, make_notification
+from app import app, create_user, edit_profile, is_match, make_notification
 from sqlalchemy.exc import IntegrityError
 
 app.config["TESTING"] = True
@@ -85,13 +85,15 @@ class HelpersTestCase(TestCase):
         self.cities = ["City1", "City2"]
 
         # add country to db
-        country_name = "Country"
-        country_code = "CO"
-        country = Country(name=country_name, code=country_code)
-        db.session.add(country)
+        countries = [
+            { "name": "Country1", "code": "C1" },
+            { "name": "Country2", "code": "C2" }
+        ]
+        countries = [Country(name=country["name"], code=country["code"]) for \
+            country in countries]
+        db.session.add_all(countries)
         db.session.commit()
-        self.country_id = country.id
-        self.country_code = country_code
+        self.countries = countries
 
         self.client = app.test_client()
 
@@ -107,8 +109,8 @@ class HelpersTestCase(TestCase):
         email1 = user1["email"]
         password1 = user1["password"]
         city_name = self.cities[0]
-        country_id = self.country_id
-        country_code = self.country_code
+        country_id = self.countries[0].id
+        country_code = self.countries[0].code
         user = create_user(
             username1,
             email1,
@@ -174,6 +176,83 @@ class HelpersTestCase(TestCase):
         )
         self.assertIsNone(user)
 
+    def test_edit_profile(self) -> None:
+        """
+            Tests edits profile correctly
+        """
+
+        # first create user
+        username1 = self.users[0]["username"]
+        email1 = self.users[0]["email"]
+        password = self.users[0]["password"]
+        city1_name = self.cities[0]
+        country1_code = self.countries[0].code
+
+        country1 = Country.query.filter_by(code=country1_code).one()
+        country1_id = country1.id
+
+        city1 = City(name=city1_name, country_id=country1_id)
+        db.session.add(city1)
+        db.session.commit()
+        city1_id = city1.id
+
+        user = User(
+            username=username1,
+            email=email1,
+            password=password,
+            city_id=city1_id
+        )
+        db.session.add(user)
+        db.session.commit()
+        user_id = user.id
+
+        # test nothing changes and no errors if input same values
+        edit_profile(user_id, username1, email1, city1_name, country1_code)
+        self.assertEqual(user.username, username1)
+        self.assertEqual(user.email, email1)
+        self.assertEqual(user.city.name, city1_name)
+        self.assertEqual(user.city.country.code, country1_code)
+
+        username2 = self.users[1]["username"]
+        email2 = self.users[1]["email"]
+        city2_name = self.cities[1]
+        country2_code = self.countries[1].code
+
+        # test can edit username
+        edit_profile(user_id, username2, email1, city1_name, country1_code)
+        self.assertEqual(user.username, username2)
+        self.assertEqual(user.email, email1)
+        self.assertEqual(user.city.name, city1_name)
+        self.assertEqual(user.city.country.code, country1_code)
+
+        # test can edit email
+        edit_profile(user_id, username2, email2, city1_name, country1_code)
+        self.assertEqual(user.username, username2)
+        self.assertEqual(user.email, email2)
+        self.assertEqual(user.city.name, city1_name)
+        self.assertEqual(user.city.country.code, country1_code)
+
+        # test can edit city but not country
+        edit_profile(user_id, username2, email2, city2_name, country1_code)
+        self.assertEqual(user.username, username2)
+        self.assertEqual(user.email, email2)
+        self.assertEqual(user.city.name, city2_name)
+        self.assertEqual(user.city.country.code, country1_code)
+
+        # test can edit city, where city is already associated with country
+        edit_profile(user_id, username2, email2, city1_name, country1_code)
+        self.assertEqual(user.username, username2)
+        self.assertEqual(user.email, email2)
+        self.assertEqual(user.city.name, city1_name)
+        self.assertEqual(user.city.country.code, country1_code)
+
+        # test can edit city and country
+        edit_profile(user_id, username2, email2, city2_name, country2_code)
+        self.assertEqual(user.username, username2)
+        self.assertEqual(user.email, email2)
+        self.assertEqual(user.city.name, city2_name)
+        self.assertEqual(user.city.country.code, country2_code)
+
     def test_is_match(self) -> None:
         """
             Tests is_match(species_id) returns true only if species with id
@@ -188,7 +267,7 @@ class HelpersTestCase(TestCase):
         db.session.commit()
         species_id = species.id
 
-        country_id = self.country_id
+        country_id = self.countries[0].id
 
         city_name1 = self.cities[0]
         city1 = City(name=city_name1, country_id=country_id)
@@ -268,7 +347,7 @@ class HelpersTestCase(TestCase):
         db.session.commit()
         species_id = species.id
 
-        country_id = self.country_id
+        country_id = self.countries[0].id
 
         city_name1 = self.cities[0]
         city1 = City(name=city_name1, country_id=country_id)
