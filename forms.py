@@ -21,7 +21,9 @@ class SignupForm(FlaskForm):
         "By checking this box, you understand and agree that if your list of \
 species on the website has a match with a sufficient number of other users, \
 then other users may be notified of your username and email address, and they \
-also then be aware of which city you live in.",
+also then be aware of which city you live in. Also, by checking this box, you \
+are acknowledging that you have fully read, understood, and agree to the \
+terms and conditions found in the about page.",
         validators=[DataRequired()]
     )
 
