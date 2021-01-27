@@ -5,12 +5,7 @@ from models import db, connect_db, User, Species, City, Country
 from models import SpeciesError, CountryError
 from forms import SignupForm, LoginForm, EditForm
 from typing import TypeVar
-# import sendgrid
 import os
-# from sendgrid.helpers.mail import *
-
-# sg = sendgrid.SendGridAPIClient(os.environ.get("SENDGRID_API_KEY"))
-# from_email = Email("seanthomasgibson@gmail.com")
 
 app = Flask(__name__)
 
@@ -32,9 +27,6 @@ mail_settings = {
     "MAIL_USE_SSL": True,
     "MAIL_USERNAME": "seanthomasgibson@gmail.com",
     "MAIL_PASSWORD": PASSWORD
-}
-mail_settings = {
-
 }
 app.config.update(mail_settings)
 
@@ -403,20 +395,6 @@ an account."
                     user.city_id == curr_user.city_id]:
                     notification = make_notification(species_id, user.id)
                     flash(notification, "info")
-                    # subject = subject("Threatened Species Website")
-                    # to_email = To(user.email)
-                    # content = PlainTextContent(notification)
-                    # mail = Mail(
-                    #     from_email=from_email,
-                    #     subject=subject,
-                    #     to_email=to_email,
-                    #     plain_text_content=content)
-                    # mail_json = mail.get()
-                    # # flash(mail_json, "info")
-                    # response = sg.send(message=mail_json)
-                    # flash(response.status_code, "info")
-                    # print(response.body)
-                    # print(response.headers)
                     with app.app_context():
                         msg = Message(
                             subject="Threatened Species Website",
