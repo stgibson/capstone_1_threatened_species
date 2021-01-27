@@ -5,72 +5,73 @@ from app import app
 db.drop_all()
 db.create_all()
 
-# add sample countries
-Country.get_countries()
-sample_country_codes = ["US", "CA", "GB"]
-countries = [Country.query.filter_by(code=code).one() for code in sample_country_codes]
+# commented out for deployment
+# # add sample countries
+# Country.get_countries()
+# sample_country_codes = ["US", "CA", "GB"]
+# countries = [Country.query.filter_by(code=code).one() for code in sample_country_codes]
 
-# add sample cities
-sample_cities = [
-    {
-        "name": "San Ramon",
-        "country_id": countries[0].id
-    },
-    {
-        "name": "New York City",
-        "country_id": countries[0].id
-    },
-    {
-        "name": "Vancouver",
-        "country_id": countries[1].id
-    },
-    {
-        "name": "London",
-        "country_id": countries[2].id
-    }
-]
-cities = [City(name=city["name"], country_id=city["country_id"]) for city in \
-    sample_cities]
-db.session.add_all(cities)
-db.session.commit()
+# # add sample cities
+# sample_cities = [
+#     {
+#         "name": "San Ramon",
+#         "country_id": countries[0].id
+#     },
+#     {
+#         "name": "New York City",
+#         "country_id": countries[0].id
+#     },
+#     {
+#         "name": "Vancouver",
+#         "country_id": countries[1].id
+#     },
+#     {
+#         "name": "London",
+#         "country_id": countries[2].id
+#     }
+# ]
+# cities = [City(name=city["name"], country_id=city["country_id"]) for city in \
+#     sample_cities]
+# db.session.add_all(cities)
+# db.session.commit()
 
-# add sample users
-sample_users = [
-    {
-        "username": "stgibson",
-        "email": "stgibson@ucsc.edu",
-        "password": "password",
-        "city_id": cities[0].id
-    },
-    {
-        "username": "seangibson",
-        "email": "seanthomasgibson@gmail.com",
-        "password": "password",
-        "city_id": cities[0].id
-    },
-    {
-        "username": "johndoe",
-        "email": "johndoe@gmail.com",
-        "password": "password",
-        "city_id": cities[1].id
-    },
-    {
-        "username": "frankie",
-        "email": "fsinatra@comcast.net",
-        "password": "password",
-        "city_id": cities[2].id
-    },
-    {
-        "username": "davidlean",
-        "email": "dvdlean@gmail.com",
-        "password": "password",
-        "city_id": cities[3].id
-    }
-]
-users = [User.signup(user["username"], user["email"], user["password"], \
-    user["city_id"]) for user in sample_users]
-db.session.add_all(users)
-db.session.commit()
+# # add sample users
+# sample_users = [
+#     {
+#         "username": "stgibson",
+#         "email": "stgibson@ucsc.edu",
+#         "password": "password",
+#         "city_id": cities[0].id
+#     },
+#     {
+#         "username": "seangibson",
+#         "email": "seanthomasgibson@gmail.com",
+#         "password": "password",
+#         "city_id": cities[0].id
+#     },
+#     {
+#         "username": "johndoe",
+#         "email": "johndoe@gmail.com",
+#         "password": "password",
+#         "city_id": cities[1].id
+#     },
+#     {
+#         "username": "frankie",
+#         "email": "fsinatra@comcast.net",
+#         "password": "password",
+#         "city_id": cities[2].id
+#     },
+#     {
+#         "username": "davidlean",
+#         "email": "dvdlean@gmail.com",
+#         "password": "password",
+#         "city_id": cities[3].id
+#     }
+# ]
+# users = [User.signup(user["username"], user["email"], user["password"], \
+#     user["city_id"]) for user in sample_users]
+# db.session.add_all(users)
+# db.session.commit()
 
 # add sample species
 # sample_species = [
