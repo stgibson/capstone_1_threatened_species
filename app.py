@@ -414,7 +414,7 @@ an account."
                     mail_json = mail.get()
                     # flash(mail_json, "info")
                     response = sg.send(message=mail_json)
-                    print(response.status_code)
+                    flash(response.status_code, "info")
                     print(response.body)
                     print(response.headers)
                     # with app.app_context():
