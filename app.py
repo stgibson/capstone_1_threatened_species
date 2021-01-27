@@ -1,11 +1,16 @@
 from flask import Flask, render_template, redirect, flash, session, request
 from flask_debugtoolbar import DebugToolbarExtension
-from flask_mail import Mail, Message
+# from flask_mail import Mail, Message
 from models import db, connect_db, User, Species, City, Country
 from models import SpeciesError, CountryError
 from forms import SignupForm, LoginForm, EditForm
 from typing import TypeVar
+import sendgrid
 import os
+from sendgrid.helpers.mail import *
+
+sg = sendgrid.SendGridAPIClient(apikey=os.environ.get("SENDGRID_API_KEY"))
+from_email = Email("seanthomasgibson@gmail.com")
 
 app = Flask(__name__)
 
@@ -398,14 +403,19 @@ an account."
                     user.city_id == curr_user.city_id]:
                     notification = make_notification(species_id, user.id)
                     flash(notification, "info")
-                    with app.app_context():
-                        msg = Message(
-                            subject="Threatened Species Website",
-                            sender=app.config.get("MAIL_USERNAME"),
-                            recipients=[user.email],
-                            body=notification
-                        )
-                        mail.send(msg)
+                    subject = "Threatened Species Website"
+                    to_email = Email(user.email)
+                    content = Content("text/plain", notification)
+                    mail = Mail(from_email, subject, to_email, content)
+                    response = sg.client.mail.send.post(request_body=mail.get())
+                    # with app.app_context():
+                    #     msg = Message(
+                    #         subject="Threatened Species Website",
+                    #         sender=app.config.get("MAIL_USERNAME"),
+                    #         recipients=[user.email],
+                    #         body=notification
+                    #     )
+                    #     mail.send(msg)
             return redirect("/home")
 
         except SpeciesError as exc:
