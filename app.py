@@ -160,6 +160,7 @@ def is_match(species_id: int, city_id: int) -> bool:
         for species in user.species:
             if species.id == species_id:
                 num_of_users += 1
+    flash(num_of_users, "info")
     return num_of_users == MATCH_NUM
 
 def make_notification(species_id: int, user_id: int) -> str:
