@@ -306,6 +306,7 @@ def show_home_page() -> str:
         :rtype: str
     """
 
+    flash(MATCH_NUM, "info")
     error_message = \
         "You are not authorized to access that page. Please first login or \
 create an account."
