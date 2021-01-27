@@ -11,7 +11,8 @@ app = Flask(__name__)
 
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "kubrick")
 app.config["DEBUG_TB_INTERCEPT_REDIRECTS"] = False
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///threatened-species"
+app.config["SQLALCHEMY_DATABASE_URI"] = \
+    os.environ.get("DATABASE_URL", "postgresql:///threatened-species")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 PASSWORD = os.environ.get("PASSWORD")
