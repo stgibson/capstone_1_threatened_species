@@ -25,6 +25,9 @@ mail_settings = {
     "MAIL_USERNAME": "seanthomasgibson@gmail.com",
     "MAIL_PASSWORD": PASSWORD
 }
+mail_settings = {
+
+}
 app.config.update(mail_settings)
 
 UserOrNone = TypeVar("UserOrNone", User, None)
@@ -382,7 +385,6 @@ an account."
             curr_user = User.query.get(user_id)
             species = Species.query.get(species_id)
             if is_match(species_id, curr_user.city_id):
-                flash("message sent", "info")
                 # send email to each user in the same city who like the species
                 for user in [user for user in species.users if \
                     user.city_id == curr_user.city_id]:
@@ -395,6 +397,7 @@ an account."
                             body=notification
                         )
                         mail.send(msg)
+                        flash(msg)
             return redirect("/home")
 
         except SpeciesError as exc:
