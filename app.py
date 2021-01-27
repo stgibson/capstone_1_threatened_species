@@ -408,6 +408,9 @@ an account."
                     content = Content("text/plain", notification)
                     mail = Mail(from_email, subject, to_email, content)
                     response = sg.client.mail.send.post(request_body=mail.get())
+                    print(response.status_code)
+                    print(response.body)
+                    print(response.headers)
                     # with app.app_context():
                     #     msg = Message(
                     #         subject="Threatened Species Website",
