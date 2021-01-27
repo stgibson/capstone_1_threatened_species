@@ -25,6 +25,8 @@ class FlaskTestCase(TestCase):
         City.query.delete()
         Country.query.delete()
 
+        self.localhost = "http://localhost/"
+
         self.users = [
             {
                 "username": "user1",
@@ -85,15 +87,111 @@ class FlaskTestCase(TestCase):
         self.species = { "name": "species", "threatened": "VU" }
         self.city = "City1"
 
-        # add country to db
-        country_name = "Country"
-        country_code = "CO"
-        country = Country(name=country_name, code=country_code)
-        db.session.add(country)
-        db.session.commit()
+        # add countries to db
+        Country.get_countries()
+        country = Country.query.filter_by(code="US").one()
         self.country_id = country.id
 
         self.client = app.test_client()
+
+    def test_show_home_page(self) -> None:
+        """
+            Tests can access home page only if logged in, and can view species
+            in list
+        """
+
+        with self.client as c:
+            # verify can't access page if not logged in
+            resp = c.get("/home")
+            self.assertEqual(resp.status_code, 302)
+            self.assertEqual(resp.location, f"{self.localhost}login")
+
+            # verify can access page if logged in
+            username = self.users[0]["username"]
+            email = self.users[0]["username"]
+            password = self.users[0]["username"]
+            city_name = self.city
+            city = City(name=city_name, country_id=self.country_id)
+            db.session.add(city)
+            db.session.commit()
+            city_id = city.id
+            user = User(
+                username=username,
+                email=email,
+                password=password,
+                city_id=city_id
+            )
+            db.session.add(user)
+            db.session.commit()
+            user_id = user.id
+            species_name = self.species["name"]
+            species_threatened = self.species["threatened"]
+            species = Species(name=species_name, threatened=species_threatened)
+            user.species.append(species)
+            db.session.commit()
+            with c.session_transaction() as change_session:
+                change_session["current_user_id"] = user_id
+            resp = c.get("/home")
+            html = resp.get_data(as_text=True)
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn(species_name, html)
+            self.assertIn(species_threatened, html)
+
+    def test_get_species_data(self) -> None:
+        """
+            Tests can get species data only if logged in
+        """
+
+        with self.client as c:
+            # verify can't get species data if not logged in
+            species_in_us = "haliaeetus leucocephalus"
+            params = { "species": species_in_us }
+            resp = c.get("/species", query_string=params)
+            self.assertEqual(resp.status_code, 302)
+            self.assertEqual(resp.location, f"{self.localhost}login")
+
+            # verify can get species if logged in
+            username = self.users[0]["username"]
+            email = self.users[0]["username"]
+            password = self.users[0]["username"]
+            city_name = self.city
+            city = City(name=city_name, country_id=self.country_id)
+            db.session.add(city)
+            db.session.commit()
+            city_id = city.id
+            user = User(
+                username=username,
+                email=email,
+                password=password,
+                city_id=city_id
+            )
+            db.session.add(user)
+            db.session.commit()
+            user_id = user.id
+            with c.session_transaction() as change_session:
+                change_session["current_user_id"] = user_id
+            resp = c.get(
+                "/species",
+                query_string=params,
+                follow_redirects=True
+            )
+            html = resp.get_data(as_text=True)
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn(species_in_us, html)
+
+            # verify can't get species not in same country as user
+            species_not_in_us = "loxodonta africana"
+            params = { "species": species_not_in_us }
+            resp = c.get(
+                "/species",
+                query_string=params,
+                follow_redirects=True
+            )
+            html = resp.get_data(as_text=True)
+            self.assertEqual(resp.status_code, 200)
+            self.assertNotIn(species_not_in_us, html)
+            # verify other species not on page anymore
+            self.assertNotIn(species_in_us, html)
 
     # def test_add_species_to_list(self) -> None:
     #     """

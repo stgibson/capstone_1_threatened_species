@@ -3,8 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from sqlalchemy.exc import IntegrityError
 import requests
+from vars import TOKEN
 
-TOKEN = "336f836fea4b17ce7f45be3004f37456c3265c95df142c16383e8b7e6e2f2d86"
 BASE_URL = "https://apiv3.iucnredlist.org/api/v3/"
 
 db = SQLAlchemy()
@@ -181,7 +181,7 @@ threatened={self.threatened}>'
                 country.id == country_id]:
                 return species
             # if species exists but not in country, raise exception
-            error_message = f"{species_name} is not in your country"
+            error_message = "that species is not in your country"
             raise SpeciesError(error_message)
         # otherwise, pull from external API
         name_supported_format = "%20".join(species_name.split(" "))
@@ -213,10 +213,15 @@ threatened={self.threatened}>'
                 species.countries.append(country)
             db.session.commit()
 
-            return species
+            if [country for country in species.countries if \
+                country.id == country_id]:
+                return species
+            # if species exists but not in country, raise exception
+            error_message = "that species is not in your country"
+            raise SpeciesError(error_message)
         except:
             db.session.rollback()
-            error_message = f"Could not find species {species_name}"
+            error_message = "Could not find species"
             raise SpeciesError(error_message)
 
     @classmethod
