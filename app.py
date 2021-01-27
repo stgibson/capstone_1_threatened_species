@@ -28,7 +28,7 @@ mail_settings = {
 app.config.update(mail_settings)
 
 UserOrNone = TypeVar("UserOrNone", User, None)
-MATCH_NUM = os.environ.get(MATCH_NUM, 10)
+MATCH_NUM = os.environ.get("MATCH_NUM", 10)
 
 debug = DebugToolbarExtension(app)
 connect_db(app)
