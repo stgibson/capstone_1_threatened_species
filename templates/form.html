@@ -1,14 +1,16 @@
 {{ form.hidden_tag() }}
 
 {% for field in form if field.widget.input_type != "hidden" %}
-  {% if field.widget.input_type == "checkbox" %}
-    {{ field }}
-    {{ field.label }}
-  {% else %}
-    {{ field.label }}
-    {{ field }}
-  {% endif %}
-  {% for error in field.errors %}
-    <small class="text-danger">{{error}}</small>
-  {% endfor %}
+  <div class="mb-3">
+    {% if field.widget.input_type == "checkbox" %}
+      {{ field(_class="form-check-input") }}
+      {{ field.label }}
+    {% else %}
+      {{ field.label }}
+      {{ field(_class="form-control") }}
+    {% endif %}
+    {% for error in field.errors %}
+      <small class="form-text text-danger">{{error}}</small>
+    {% endfor %}
+  </div>
 {% endfor %}
