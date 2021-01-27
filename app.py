@@ -404,11 +404,11 @@ an account."
                     notification = make_notification(species_id, user.id)
                     flash(notification, "info")
                     subject = "Threatened Species Website"
-                    to_email = Email(user.email)
+                    to_email = To(user.email)
                     content = Content("text/plain", notification)
                     mail = Mail(from_email, subject, to_email, content)
                     mail_json = mail.get()
-                    flash(mail_json, "info")
+                    # flash(mail_json, "info")
                     response = sg.client.mail.send.post(request_body=mail_json)
                     print(response.status_code)
                     print(response.body)
