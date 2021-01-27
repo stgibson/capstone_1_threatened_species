@@ -388,10 +388,12 @@ an account."
             curr_user = User.query.get(user_id)
             species = Species.query.get(species_id)
             if is_match(species_id, curr_user.city_id):
+                flash("match")
                 # send email to each user in the same city who like the species
                 for user in [user for user in species.users if \
                     user.city_id == curr_user.city_id]:
                     notification = make_notification(species_id, user.id)
+                    flash(notification, "info")
                     with app.app_context():
                         msg = Message(
                             subject="Threatened Species Website",
@@ -400,7 +402,6 @@ an account."
                             body=notification
                         )
                         #mail.send(msg)
-                        flash(msg)
             return redirect("/home")
 
         except SpeciesError as exc:
