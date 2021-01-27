@@ -403,13 +403,17 @@ an account."
                     user.city_id == curr_user.city_id]:
                     notification = make_notification(species_id, user.id)
                     flash(notification, "info")
-                    subject = "Threatened Species Website"
+                    subject = subject("Threatened Species Website")
                     to_email = To(user.email)
                     content = Content("text/plain", notification)
-                    mail = Mail(from_email, subject, to_email, content)
+                    mail = Mail(
+                        from_email=from_email,
+                        subject=subject,
+                        to_email=to_email,
+                        plain_text_cotent=content)
                     mail_json = mail.get()
                     # flash(mail_json, "info")
-                    response = sg.client.mail.send.post(request_body=mail_json)
+                    response = sg.send(message=mail_json)
                     print(response.status_code)
                     print(response.body)
                     print(response.headers)
