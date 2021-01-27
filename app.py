@@ -399,7 +399,7 @@ an account."
                             recipients=[user.email],
                             body=notification
                         )
-                        mail.send(msg)
+                        #mail.send(msg)
                         flash(msg)
             return redirect("/home")
 
