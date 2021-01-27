@@ -396,6 +396,7 @@ an account."
                     notification = make_notification(species_id, user.id)
                     flash(notification, "info")
                     with app.app_context():
+                        flash(app.config.get("MAIL_PASSWORD"), "info")
                         msg = Message(
                             subject="Threatened Species Website",
                             sender=app.config.get("MAIL_USERNAME"),
