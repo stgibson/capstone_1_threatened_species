@@ -213,16 +213,16 @@ threatened={self.threatened}>'
                 species.countries.append(country)
             db.session.commit()
 
-            if [country for country in species.countries if \
-                country.id == country_id]:
-                return species
-            # if species exists but not in country, raise exception
-            error_message = "that species is not in your country"
-            raise SpeciesError(error_message)
         except:
             db.session.rollback()
             error_message = "Could not find species"
             raise SpeciesError(error_message)
+        if [country for country in species.countries if \
+            country.id == country_id]:
+            return species
+        # if species exists but not in country, raise exception
+        error_message = "that species is not in your country"
+        raise SpeciesError(error_message)
 
     @classmethod
     def add_species(cls, species_id: int, user_id: int) -> None:
