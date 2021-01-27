@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from sqlalchemy.exc import IntegrityError
 import requests
+import os
 
 TOKEN = os.environ.get("TOKEN")
 BASE_URL = "https://apiv3.iucnredlist.org/api/v3/"
