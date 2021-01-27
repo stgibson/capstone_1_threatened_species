@@ -405,12 +405,12 @@ an account."
                     flash(notification, "info")
                     subject = subject("Threatened Species Website")
                     to_email = To(user.email)
-                    content = Content("text/plain", notification)
+                    content = PlainTextContent(notification)
                     mail = Mail(
                         from_email=from_email,
                         subject=subject,
                         to_email=to_email,
-                        plain_text_cotent=content)
+                        plain_text_content=content)
                     mail_json = mail.get()
                     # flash(mail_json, "info")
                     response = sg.send(message=mail_json)
