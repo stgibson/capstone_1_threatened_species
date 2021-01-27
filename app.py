@@ -19,6 +19,9 @@ PASSWORD = os.environ.get("PASSWORD")
 
 mail_settings = {
     "MAIL_SERVER": "smtp.gmail.com",
+    "TESTING" = False,
+    "MAIL_DEBUG" = True,
+    "MAIL_SUPPRESS_SEND" = False,
     "MAIL_PORT": 465,
     "MAIL_USE_TLS": False,
     "MAIL_USE_SSL": True,
