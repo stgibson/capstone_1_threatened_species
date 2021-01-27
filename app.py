@@ -380,6 +380,7 @@ an account."
             curr_user = User.query.get(user_id)
             species = Species.query.get(species_id)
             if is_match(species_id, curr_user.city_id):
+                flash("message sent", "info")
                 # send email to each user in the same city who like the species
                 for user in [user for user in species.users if \
                     user.city_id == curr_user.city_id]:
