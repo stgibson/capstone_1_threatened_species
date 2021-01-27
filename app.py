@@ -163,10 +163,7 @@ def is_match(species_id: int, city_id: int) -> bool:
         for species in user.species:
             if species.id == species_id:
                 num_of_users += 1
-    flash(num_of_users, "info")
-    flash(MATCH_NUM, "info")
     result = num_of_users == MATCH_NUM
-    flash(result, "info")
     return result
 
 def make_notification(species_id: int, user_id: int) -> str:
@@ -387,16 +384,12 @@ an account."
             curr_user = User.query.get(user_id)
             species = Species.query.get(species_id)
             is_a_match = is_match(species_id, curr_user.city_id)
-            flash(is_a_match, "info")
             if is_a_match:
-                flash("match", "info")
                 # send email to each user in the same city who like the species
                 for user in [user for user in species.users if \
                     user.city_id == curr_user.city_id]:
                     notification = make_notification(species_id, user.id)
-                    flash(notification, "info")
                     with app.app_context():
-                        flash(app.config.get("MAIL_PASSWORD"), "info")
                         msg = Message(
                             subject="Threatened Species Website",
                             sender=app.config.get("MAIL_USERNAME"),
