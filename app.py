@@ -5,15 +5,16 @@ from models import db, connect_db, User, Species, City, Country
 from models import SpeciesError, CountryError
 from forms import SignupForm, LoginForm, EditForm
 from typing import TypeVar
-from vars import PASSWORD
+import os
 
 app = Flask(__name__)
 
-app.config["SECRET_KEY"] = "kubrick"
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "kubrick")
 app.config["DEBUG_TB_INTERCEPT_REDIRECTS"] = False
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///threatened-species"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-# app.config["SQLALCHEMY_ECHO"] = True
+
+PASSWORD = os.environ.get("PASSWORD")
 
 mail_settings = {
     "MAIL_SERVER": "smtp.gmail.com",
