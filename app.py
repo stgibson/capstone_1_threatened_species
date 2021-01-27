@@ -407,6 +407,7 @@ an account."
                     to_email = Email(user.email)
                     content = Content("text/plain", notification)
                     mail = Mail(from_email, subject, to_email, content)
+                    flash(mail, "info")
                     response = sg.client.mail.send.post(request_body=mail.get())
                     print(response.status_code)
                     print(response.body)
