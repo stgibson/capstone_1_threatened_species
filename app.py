@@ -405,7 +405,7 @@ an account."
                             recipients=[user.email],
                             body=notification
                         )
-                        #mail.send(msg)
+                        mail.send(msg)
             return redirect("/home")
 
         except SpeciesError as exc:
