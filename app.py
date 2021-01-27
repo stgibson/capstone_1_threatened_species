@@ -9,7 +9,7 @@ import sendgrid
 import os
 from sendgrid.helpers.mail import *
 
-sg = sendgrid.SendGridAPIClient(apikey=os.environ.get("SENDGRID_API_KEY"))
+sg = sendgrid.SendGridAPIClient(os.environ.get("SENDGRID_API_KEY"))
 from_email = Email("seanthomasgibson@gmail.com")
 
 app = Flask(__name__)
@@ -20,23 +20,23 @@ app.config["SQLALCHEMY_DATABASE_URI"] = \
     os.environ.get("DATABASE_URL", "postgresql:///threatened-species")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-PASSWORD = os.environ.get("PASSWORD")
+# PASSWORD = os.environ.get("PASSWORD")
 
-mail_settings = {
-    "MAIL_SERVER": "smtp.gmail.com",
-    "TESTING": False,
-    "MAIL_DEBUG": True,
-    "MAIL_SUPPRESS_SEND": False,
-    "MAIL_PORT": 465,
-    "MAIL_USE_TLS": False,
-    "MAIL_USE_SSL": True,
-    "MAIL_USERNAME": "seanthomasgibson@gmail.com",
-    "MAIL_PASSWORD": PASSWORD
-}
-mail_settings = {
+# mail_settings = {
+#     "MAIL_SERVER": "smtp.gmail.com",
+#     "TESTING": False,
+#     "MAIL_DEBUG": True,
+#     "MAIL_SUPPRESS_SEND": False,
+#     "MAIL_PORT": 465,
+#     "MAIL_USE_TLS": False,
+#     "MAIL_USE_SSL": True,
+#     "MAIL_USERNAME": "seanthomasgibson@gmail.com",
+#     "MAIL_PASSWORD": PASSWORD
+# }
+# mail_settings = {
 
-}
-app.config.update(mail_settings)
+# }
+# app.config.update(mail_settings)
 
 UserOrNone = TypeVar("UserOrNone", User, None)
 MATCH_NUM = int(os.environ.get("MATCH_NUM", 10))
