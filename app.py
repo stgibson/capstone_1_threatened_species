@@ -5,7 +5,6 @@ from models import db, connect_db, User, Species, City, Country
 from models import SpeciesError, CountryError
 from forms import SignupForm, LoginForm, EditForm
 from helpers import *
-from typing import TypeVar
 import os
 
 app = Flask(__name__)
@@ -30,9 +29,6 @@ mail_settings = {
     "MAIL_PASSWORD": PASSWORD
 }
 app.config.update(mail_settings)
-
-UserOrNone = TypeVar("UserOrNone", User, None)
-MATCH_NUM = int(os.environ.get("MATCH_NUM", 10))
 
 debug = DebugToolbarExtension(app)
 connect_db(app)
