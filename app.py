@@ -39,6 +39,14 @@ connect_db(app)
 
 mail = Mail(app)
 
+def login(user_id: int) -> None:
+    """
+        Stores user_id in session
+        :type user_id: int
+    """
+
+    session["current_user_id"] = user_id
+
 @app.route("/")
 def go_to_home_page() -> str:
     """

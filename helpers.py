@@ -39,15 +39,6 @@ def create_user(
     # add user to db
     return User.signup(username, email, password, city_id)
 
-
-def login(user_id: int) -> None:
-    """
-        Stores user_id in session
-        :type user_id: int
-    """
-
-    session["current_user_id"] = user_id
-
 def edit_profile(user_id: int, username: str, email: str, city: str, country: str) -> None:
     """
         Edits profile of user with id user_id
