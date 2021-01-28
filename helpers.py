@@ -1,5 +1,6 @@
 import os
 from typing import TypeVar
+from models import User, Species, Country, City
 
 UserOrNone = TypeVar("UserOrNone", User, None)
 MATCH_NUM = int(os.environ.get("MATCH_NUM", 10))
