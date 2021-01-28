@@ -1,3 +1,8 @@
+import os
+
+UserOrNone = TypeVar("UserOrNone", User, None)
+MATCH_NUM = int(os.environ.get("MATCH_NUM", 10))
+
 def create_user(
     username: str,
     email: str,
