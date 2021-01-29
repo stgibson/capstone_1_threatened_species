@@ -94,7 +94,8 @@ are logged in.
 ### Backlog
 
 The following is a list of backlog features for future versions of the project:
-* Add an about page and contact us page
+* Add error handling for routes
+* Add a contact us page
 * Alphabetize country names for dropdown for users to sign up
 * Also display common name(s) for species to user
 * Make threatened level name more user friendly
