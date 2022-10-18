@@ -48,13 +48,13 @@ is in, the user instead gets a message letting the user know why they can't
 access the species data. If the user does get information on the species, the
 user also sees a button that when clicked, will add the species to a list of
 species. The user can also choose to remove a species from the list. If a
-certain number of users in the same city have the same species in their lists as
-a species in the user's list, the user an email of the other users in the user's
-city that have added the species to their lists. While logged in, the user may
-also edit or delete the user's profile. When the user is done working on the
-website for the time being, the user may logout. Users may always access the
-about page to get information on how to use the website, whether or not they
-are logged in.
+certain number of users in the same city have the same species in their lists,
+the last user to add the species to the user's list will receive an email
+containing the other users' usernames and email addresses. While logged in,
+the user may also edit or delete the user's profile. When the user is done
+working on the website for the time being, the user may logout. Users may
+always access the about page to get information on how to use the website,
+whether or not they are logged in.
 
 ## API Link
 [API link](https://apiv3.iucnredlist.org/api/v3/docs)
